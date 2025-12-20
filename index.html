@@ -72,7 +72,7 @@
 <script>
 /** ========= Game Data ========= **/
 
-const SETTINGS = {
+SETTINGS = {
   totalTiles: 24,
   rounds: 10,
   players: 2, // change to 3 or 4 easily
@@ -95,87 +95,115 @@ function zoneFor(tileIndex) {
  * delayed: queued effect {inTurns, apply(p)}
  */
 const CARDS = {
+  // -----------------------
+  // Unit 1 (3 cards)
+  // Topics: resources, decision making / opportunity cost, PPF
+  // -----------------------
   unit1: [
     {
-      title: "Resource Allocation",
-      prompt: "You have limited resources (land + labour). Where do you invest?",
-      A: { text: "Build factories (short-term output)", effects: { gdp:+3, cash:-200, ineq:+1 } },
-      B: { text: "Train workers (human capital)", effects: { cash:-150 }, delayed: { inTurns:2, effects:{ gdp:+4, unemp:-1 } } }
+      title: "Scarcity Choice",
+      prompt: "You only have enough resources to fund ONE project this year.",
+      A: { text: "Build factories (fast output)", effects: { gdp: +2, cash: -200, ineq: +1 } },
+      B: { text: "Invest in education (long-term)", effects: { cash: -150 }, delayed: { inTurns: 2, effects: { gdp: +3, unemp: -1 } } }
     },
     {
       title: "Opportunity Cost",
-      prompt: "You can only fund one program this year.",
-      A: { text: "Healthcare expansion", effects: { cash:-200, unemp:-1, prosperity:+1 } },
-      B: { text: "Infrastructure upgrades", effects: { cash:-250 }, delayed: { inTurns:1, effects:{ gdp:+3 } } }
+      prompt: "You spend most of your budget on one big goal. What happens?",
+      A: { text: "Military spending (security boost)", effects: { gdp: +1, cash: -250 }, delayed: { inTurns: 1, effects: { prosperity: -1 } } },
+      B: { text: "Social programs (quality of life)", effects: { cash: -250, prosperity: +1, ineq: -1 } }
     },
     {
-      title: "PPF Choice",
-      prompt: "Your economy is on a PPF. Choose what you produce more of.",
-      A: { text: "More consumer goods now", effects: { gdp:+2, ineq:+1 } },
-      B: { text: "More capital goods for later", effects: { cash:-100 }, delayed: { inTurns:2, effects:{ gdp:+5 } } }
+      title: "PPF Trade-Off",
+      prompt: "Your economy is on a PPF — you can’t maximize everything at once.",
+      A: { text: "More consumer goods now", effects: { gdp: +2, inflation: +1 } },
+      B: { text: "More capital goods for later", effects: { cash: -100 }, delayed: { inTurns: 2, effects: { gdp: +4 } } }
     },
   ],
 
+  // -----------------------
+  // Unit 2 (3 cards)
+  // Topics: supply & demand, price controls, minimum wage
+  // -----------------------
   unit2: [
     {
-      title: "Demand Shock",
-      prompt: "Demand for housing rises quickly. What happens/what do you do?",
-      A: { text: "Let prices rise (market clears)", effects: { gdp:+2, ineq:+2, inflation:+1 } },
-      B: { text: "Price ceiling to keep it affordable", effects: { prosperity:+1 }, delayed: { inTurns:1, effects:{ gdp:-1, unemp:+1 } } }
+      title: "Demand Surge",
+      prompt: "Demand increases, but supply stays the same. What do you do?",
+      A: { text: "Let prices rise (market clears)", effects: { cash: +150, inflation: +1, ineq: +1 } },
+      B: { text: "Try to keep prices low", effects: { prosperity: +1 }, delayed: { inTurns: 1, effects: { gdp: -1 } } }
     },
     {
-      title: "Supply Disruption",
-      prompt: "A major supplier shuts down. Supply falls.",
-      A: { text: "Subsidize producers to boost supply", effects: { cash:-200, gdp:+1 } },
-      B: { text: "Do nothing (let market adjust)", effects: { inflation:+2, unemp:+1 } }
+      title: "Rent Price Ceiling",
+      prompt: "The government sets a rent price ceiling to make housing affordable.",
+      A: { text: "Affordable rent (good access)", effects: { prosperity: +1, ineq: -1 } },
+      B: { text: "Shortage risk shows up later", effects: { prosperity: 0 }, delayed: { inTurns: 1, effects: { unemp: +1, gdp: -1 } } }
     },
     {
-      title: "Minimum Wage Debate",
-      prompt: "Minimum wage increases. Pick the most likely outcome for your economy.",
-      A: { text: "Higher incomes + demand", effects: { gdp:+1, ineq:-1, inflation:+1 } },
-      B: { text: "Higher business costs", effects: { unemp:+1, cash:+100 } }
+      title: "Minimum Wage",
+      prompt: "Minimum wage increases. Pick the most likely short-term effect to prioritize.",
+      A: { text: "Workers have more income to spend", effects: { gdp: +1, ineq: -1, inflation: +1 } },
+      B: { text: "Businesses cut hours to reduce costs", effects: { unemp: +1, cash: +100 } }
     },
   ],
 
+  // -----------------------
+  // Unit 3 (4 cards)
+  // Topics: GDP/business cycle, fiscal vs monetary, CPI/inflation, inequality
+  // -----------------------
   unit3: [
     {
-      title: "Recession",
-      prompt: "Your economy enters a recession (GDP falling, unemployment rising). Choose a policy.",
-      A: { text: "Fiscal policy: increase government spending", effects: { cash:-300, gdp:+3, unemp:-1 } },
-      B: { text: "Monetary policy: lower interest rates", effects: { gdp:+2, inflation:+1 }, delayed: { inTurns:1, effects:{ gdp:+1 } } }
+      title: "Recession Hit",
+      prompt: "GDP is falling and unemployment is rising. Choose a stabilization policy.",
+      A: { text: "Fiscal policy: increase government spending", effects: { cash: -300, gdp: +2, unemp: -1 } },
+      B: { text: "Monetary policy: lower interest rates", effects: { gdp: +1, inflation: +1 }, delayed: { inTurns: 1, effects: { gdp: +1 } } }
     },
     {
-      title: "Inflation Spike (CPI)",
-      prompt: "CPI rises fast. Inflation is hurting purchasing power.",
-      A: { text: "Raise interest rates (cool demand)", effects: { inflation:-2, gdp:-1 } },
-      B: { text: "Targeted subsidies (short relief)", effects: { cash:-200, prosperity:+1 }, delayed: { inTurns:1, effects:{ inflation:+1 } } }
+      title: "GDP Boost",
+      prompt: "Which choice increases GDP the most right now?",
+      A: { text: "Build new factories", effects: { gdp: +2, cash: -200 } },
+      B: { text: "Hold cash and wait", effects: { cash: +100, prosperity: -1 } }
     },
     {
-      title: "Inequality Rises (Lorenz)",
-      prompt: "Inequality is rising. Your Lorenz curve bends further from equality.",
-      A: { text: "Progressive taxes + transfers", effects: { cash:-100, ineq:-2, prosperity:+1 } },
-      B: { text: "Lower taxes to attract investment", effects: { gdp:+2, ineq:+1 } }
+      title: "CPI Inflation Spike",
+      prompt: "CPI rises quickly. People complain groceries feel ‘more expensive.’",
+      A: { text: "Raise interest rates (cool demand)", effects: { inflation: -2, gdp: -1 } },
+      B: { text: "Give targeted relief (short-term)", effects: { cash: -200, prosperity: +1 }, delayed: { inTurns: 1, effects: { inflation: +1 } } }
+    },
+    {
+      title: "Inequality Rises",
+      prompt: "Inequality increases (Lorenz curve bends away from equality).",
+      A: { text: "Progressive taxes + transfers", effects: { cash: -150, ineq: -2, prosperity: +1 } },
+      B: { text: "Lower taxes to attract investment", effects: { gdp: +2, ineq: +1 } }
     },
   ],
 
+  // -----------------------
+  // Unit 4/5 (4 cards)
+  // Topics: budgeting, investing, comparative advantage, currency
+  // -----------------------
   unit45: [
     {
-      title: "Budgeting",
-      prompt: "You’re planning your yearly budget. Pick a strategy.",
-      A: { text: "Build an emergency fund", effects: { cash:-150, prosperity:+1 }, delayed: { inTurns:2, effects:{ cash:+250 } } },
-      B: { text: "Spend more now to boost growth", effects: { cash:-250, gdp:+2 } }
+      title: "Budget Plan",
+      prompt: "You’re planning your budget. Pick a strategy.",
+      A: { text: "Build an emergency fund", effects: { cash: -100, prosperity: +1 }, delayed: { inTurns: 2, effects: { cash: +250 } } },
+      B: { text: "Spend more now to boost growth", effects: { cash: -200, gdp: +2 } }
     },
     {
       title: "Investing Risk",
-      prompt: "You can invest in a diversified fund or a high-risk stock.",
-      A: { text: "Diversified fund (steady)", effects: { cash:-200 }, delayed: { inTurns:1, effects:{ cash:+260, prosperity:+1 } } },
-      B: { text: "High-risk stock (volatile)", effects: { cash:-200 }, delayed: { inTurns:1, rng: true } }
+      prompt: "Choose your investment style.",
+      A: { text: "Diversified fund (steady)", effects: { cash: -200 }, delayed: { inTurns: 1, effects: { cash: +260, prosperity: +1 } } },
+      B: { text: "High-risk stock (fun gamble)", effects: { cash: -200 }, delayed: { inTurns: 1, rng: true } }
     },
     {
-      title: "Comparative Advantage Trade",
-      prompt: "You specialize in tech; another player specializes in food. Trade?",
-      A: { text: "Trade (both benefit)", effects: { gdp:+2, prosperity:+1 } },
-      B: { text: "No trade (self-sufficient)", effects: { prosperity:-1 } }
+      title: "Comparative Advantage",
+      prompt: "Trade can raise total output when countries specialize.",
+      A: { text: "Trade & specialize (mutual benefit)", effects: { gdp: +2, prosperity: +1 } },
+      B: { text: "Avoid trade (self-sufficient)", effects: { prosperity: -1 } }
+    },
+    {
+      title: "Currency Drops",
+      prompt: "Your currency weakens compared to others.",
+      A: { text: "Exports become cheaper (boost output)", effects: { gdp: +1, cash: +100 } },
+      B: { text: "Imports cost more (pressure on prices)", effects: { inflation: +1, cash: -50 } }
     },
   ],
 };
@@ -231,12 +259,13 @@ function log(msg) {
 
 function renderBoard() {
   boardEl.innerHTML = "";
-  for (let i=0; i<SETTINGS.totalTiles; i++) {
+  for (let i = 0; i < SETTINGS.totalTiles; i++) {
     const z = zoneFor(i);
     const tile = document.createElement("div");
     tile.className = `tile ${z.cls}`;
+
     const tokensHere = state.positions
-      .map((pos, idx) => ({pos, idx}))
+      .map((pos, idx) => ({ pos, idx }))
       .filter(x => x.pos === i);
 
     const tokenRow = document.createElement("div");
@@ -245,18 +274,23 @@ function renderBoard() {
     tokensHere.forEach(t => {
       const dot = document.createElement("span");
       dot.className = "token";
-      dot.style.background = ["#111","#2563eb","#16a34a","#dc2626"][t.idx] || "#111";
+      dot.style.background = ["#111", "#2563eb", "#16a34a", "#dc2626"][t.idx] || "#111";
       dot.title = state.players[t.idx].name;
       tokenRow.appendChild(dot);
     });
 
-    tile.innerHTML = `<div class="idx">#${i} • ${z.name}</div><div>${z.name}</div>`;
+    // ✅ No unit labels shown to the player
+    tile.innerHTML = `
+      <div class="idx">Tile #${i}</div>
+      <div>Event</div>
+    `;
     tile.appendChild(tokenRow);
 
     if (i === state.positions[state.currentPlayer]) tile.classList.add("active");
     boardEl.appendChild(tile);
   }
 }
+
 
 function renderStats() {
   statsEl.innerHTML = "";
