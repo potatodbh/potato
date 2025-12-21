@@ -33,19 +33,46 @@
       .board { grid-template-columns: repeat(6, 1fr); }
     }
 
-    .tile {
-      border-radius: 14px;
-      padding: 10px;
-      min-height: 64px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.03);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      font-size: 12px;
-      position: relative;
-      overflow: hidden;
-    }
+    /* Make tiles feel more “gamey” and readable */
+.tile {
+  min-height: 78px;               /* gives room so labels don't clip */
+}
+
+.tile .name {
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.15;
+  white-space: normal;            /* allow wrapping */
+  word-break: keep-all;           /* don't split words like Deci|sion */
+  overflow-wrap: anywhere;        /* if absolutely needed on tiny screens */
+}
+
+/* Prevent the board grid from forcing super narrow tiles */
+.board {
+  grid-template-columns: repeat(10, minmax(92px, 1fr));
+}
+@media (max-width: 1100px) {
+  .board { grid-template-columns: repeat(8, minmax(92px, 1fr)); }
+}
+@media (max-width: 650px) {
+  .board { grid-template-columns: repeat(6, minmax(92px, 1fr)); }
+}
+
+    /* Color accents per tile type (subtle glow + border) */
+.tile.decision { border-color: rgba(244, 63, 94, .35); box-shadow: 0 0 0 1px rgba(244,63,94,.08) inset; }
+.tile.quiz     { border-color: rgba(168, 85, 247, .35); box-shadow: 0 0 0 1px rgba(168,85,247,.08) inset; }
+.tile.policy   { border-color: rgba(250, 204, 21, .35); box-shadow: 0 0 0 1px rgba(250,204,21,.08) inset; }
+.tile.market   { border-color: rgba(34, 197, 94, .35); box-shadow: 0 0 0 1px rgba(34,197,94,.08) inset; }
+.tile.trade    { border-color: rgba(59, 130, 246, .35); box-shadow: 0 0 0 1px rgba(59,130,246,.08) inset; }
+.tile.bonus    { border-color: rgba(249, 115, 22, .35); box-shadow: 0 0 0 1px rgba(249,115,22,.08) inset; }
+.tile.risk     { border-color: rgba(255, 255, 255, .20); box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset; }
+
+/* Make the active tile pop a bit more */
+.tile.active {
+  outline: 2px solid rgba(255,255,255,.65);
+  box-shadow: 0 0 0 5px rgba(255,255,255,.06), 0 18px 28px rgba(0,0,0,.30);
+}
+
     .tile .idx { opacity: .65; font-size: 11px; }
     .tile .name { font-size: 13px; letter-spacing: .2px; }
     .tile.active {
@@ -82,6 +109,13 @@
     .small { font-size: 12px; opacity: .82; }
     .choice { display:grid; gap: 10px; margin-top: 10px; }
     .log { max-height: 260px; overflow:auto; font-size: 12px; line-height: 1.35; padding-right: 6px; }
+
+    .log {
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
 
     .stat-card {
       background: rgba(255,255,255,.03);
@@ -587,10 +621,20 @@ const rulesCloseBtn = document.getElementById("rulesCloseBtn");
 const rulesStartBtn = document.getElementById("rulesStartBtn");
 const dontShowRules = document.getElementById("dontShowRules");
 
-function log(msg) {
-  const line = document.createElement("div");
-  line.textContent = msg;
-  logEl.prepend(line);
+function logEntry({ icon = ".", title = "", detail = ""}) {
+  const row = document.createElement("div");
+  row.style.padding = "8px 0";
+  row.style.borderBottom = "1px solid rgba(255,255,255,.08)";
+  row.innerHTML = `
+    <div style="display:flex; gap:10px; align-items:flex-start;">
+      <div style="width:22px; opacity:.9;">${icon}</div>
+      <div>
+        <div style="font-weight:700; letter-spacing:.1px;">${title}</div>
+        ${detail ? `<div style="opacity:.82; margin-top:2px;">${detail}</div>` : ""}
+      </div>
+    </div>
+  `;
+  logEl.prepend(row);
 }
 
 /** ========================
@@ -634,7 +678,7 @@ function renderBoard() {
     const meta = TILE_LABEL[t];
 
     const tile = document.createElement("div");
-    tile.className = "tile";
+    tile.className = 'tile ${t}';
     if (t === "start") tile.classList.add("start");
     if (t === "finish") tile.classList.add("finish");
     if (i === state.positions[state.currentPlayer]) tile.classList.add("active");
@@ -689,10 +733,12 @@ function runQueuedEffects(p) {
       }
     } else {
       applyEffects(p, q.effects);
-      log(`${p.name} delayed effect applied: ${formatEffects(q.effects)}.`);
+     logEntry({
+  icon: "⏳",
+  title: `${p.name} delayed effect triggered`,
+  detail: formatEffects(q.effects)
+});
     }
-  });
-}
 
 /** ========================
  * CARD PICKERS BY TILE TYPE
@@ -779,7 +825,12 @@ function checkWin(pIndex) {
     rollBtn.disabled = true;
     choicesEl.innerHTML = "";
     eventBox.innerHTML = `<strong>🏆 ${p.name} WINS!</strong><div class="small" style="margin-top:6px;">Reached Finish with Prosperity Score ${score} (≥ ${SETTINGS.prosperityToWin}).</div>`;
-    log(`WINNER: ${p.name} (Prosperity ${score})`);
+logEntry({
+  icon: "🏆",
+  title: `Winner: ${p.name}`,
+  detail: `Prosperity Score ${score} (goal ≥ ${SETTINGS.prosperityToWin})`
+});
+
     return true;
   } else {
     eventBox.innerHTML = `<strong>${p.name} reached the Finish…</strong><div class="small" style="margin-top:6px;">But Prosperity Score (${score}) is below ${SETTINGS.prosperityToWin}. Keep playing until someone qualifies.</div>`;
@@ -798,13 +849,11 @@ function choose(card, which) {
   applyEffects(p, choice.effects);
 
   // delayed effect
-  if (choice.delayed) {
-    p.queue.push({ inTurns: choice.delayed.inTurns, effects: choice.delayed.effects, rng: !!choice.delayed.rng });
-    log(`${p.name} chose ${which}: ${choice.text}. (Delayed in ${choice.delayed.inTurns} turns)`);
-  } else {
-    const fx = choice.effects ? formatEffects(choice.effects) : "";
-    log(`${p.name} chose ${which}: ${choice.text}.${fx ? " Effects: " + fx : ""}`);
-  }
+ logEntry({
+  icon: which === "A" ? "🅰️" : "🅱️",
+  title: `${p.name} chose ${which}`,
+  detail: `${choice.text}`
+});
 
   // gentle consequence: if cash hits 0, small stress penalty
   if (p.cash === 0) {
@@ -821,6 +870,13 @@ function choose(card, which) {
   if (!checkWin(state.currentPlayer)) {
     setTimeout(nextTurn, 220);
   }
+}
+
+#eventBox {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.10);
 }
 
 /** ========================
@@ -890,7 +946,12 @@ rollBtn.addEventListener("click", () => {
   const tileIndex = state.positions[idx];
   const p = state.players[idx];
 
-  log(`${p.name} rolled ${roll} → moved to tile #${tileIndex}.`);
+ logEntry({
+  icon: "🎲",
+  title: `${p.name} rolled ${roll}`,
+  detail: `Moved to tile #${tileIndex}.`
+});
+
 
   // If player is at finish, we still show a finish card, but victory depends on prosperity.
   const card = cardForLanding(tileIndex);
