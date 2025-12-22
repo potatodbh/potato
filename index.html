@@ -5,71 +5,130 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>EconNation — Race to Prosperity</title>
 
-  <!-- Prevent favicon.ico console noise -->
-  <link rel="icon" href="data:,">
+  <!-- Stop favicon.ico 404 -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">
 
   <style>
-    :root { font-family: system-ui, Arial, sans-serif; }
-    body { margin: 0; padding: 16px; background: #0b0d10; color: #e9eef5; }
-    h1 { margin: 0 0 6px; font-size: 40px; letter-spacing: .2px; }
-    .sub { opacity: .8; font-size: 14px; margin-bottom: 14px; }
-
-    .wrap { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 14px; }
-    .card {
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px;
-      padding: 14px;
-      box-shadow: 0 14px 30px rgba(0,0,0,.35);
+    :root{
+      --bg:#0b0d10;
+      --card: rgba(255,255,255,.04);
+      --card2: rgba(255,255,255,.03);
+      --border: rgba(255,255,255,.10);
+      --border2: rgba(255,255,255,.14);
+      --text:#e9eef5;
+      --muted: rgba(233,238,245,.75);
+      --shadow: 0 14px 30px rgba(0,0,0,.35);
+      --r: 18px;
+      font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
     }
 
-    .board{
-      display:grid;
-      grid-template-columns: repeat(10, minmax(92px, 1fr));
+    body{
+      margin:0;
+      background: radial-gradient(1200px 700px at 20% -10%, rgba(96,165,250,.18), transparent 60%),
+                  radial-gradient(900px 600px at 110% 10%, rgba(168,85,247,.14), transparent 60%),
+                  radial-gradient(900px 600px at 70% 120%, rgba(34,197,94,.10), transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      padding: 18px;
+    }
+
+    h1{ margin:0; font-size: 38px; letter-spacing:.2px; }
+    .sub{ margin-top:6px; margin-bottom:14px; color:var(--muted); font-size:14px; }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .controls{
+      display:flex;
       gap: 10px;
-      user-select: none;
-      align-items: stretch;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.92);
+      white-space: nowrap;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--r);
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    /* Layout: board bigger, dashboard readable */
+    .wrap{
+      display:grid;
+      grid-template-columns: 1.45fr 0.85fr;
+      gap: 14px;
+      align-items: start;
     }
     @media (max-width: 1100px){
-      .wrap { grid-template-columns: 1fr; }
-      .board{ grid-template-columns: repeat(8, minmax(92px, 1fr)); }
+      .wrap{ grid-template-columns: 1fr; }
+    }
+
+    /* Board grid */
+    .board{
+      display:grid;
+      grid-template-columns: repeat(10, minmax(110px, 1fr));
+      gap: 10px;
+      user-select:none;
+    }
+    @media (max-width: 1100px){
+      .board{ grid-template-columns: repeat(8, minmax(110px, 1fr)); }
     }
     @media (max-width: 650px){
-      .board{ grid-template-columns: repeat(6, minmax(92px, 1fr)); }
+      .board{ grid-template-columns: repeat(6, minmax(110px, 1fr)); }
     }
 
     .tile{
-      min-height: 84px;
+      min-height: 86px;
       padding: 10px 12px;
       border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.10);
+      border: 1px solid var(--border);
       background: rgba(255,255,255,.03);
+
       display:flex;
-      flex-direction: column;
-      justify-content: space-between;
-      font-size: 12px;
-      overflow: hidden;
+      flex-direction:column;
+      justify-content:space-between;
+
+      /* IMPORTANT: do NOT hide overflow -> this caused label clipping */
+      overflow: visible;
     }
 
-    .tile .idx { opacity: .65; font-size: 11px; }
-
-    /* FIX: prevent weird wrap/cut for Decision etc */
+    .tile .idx{ opacity:.65; font-size:11px; }
     .tile .name{
-      display:flex;
-      align-items:center;
-      gap: 8px;
-      font-weight: 900;
+      font-weight: 850;
       font-size: 13px;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-    .tile .icon{ flex: 0 0 auto; }
-    .tile .label{
-      overflow: hidden;
-      text-overflow: ellipsis;
+      line-height: 1.15;
+      letter-spacing:.2px;
+      white-space: normal;
+      word-break: normal;
+      overflow-wrap: normal;
     }
 
-    /* Color accents per tile type */
+    .tile.active{
+      outline: 2px solid rgba(255,255,255,.65);
+      box-shadow: 0 0 0 5px rgba(255,255,255,.06), 0 18px 28px rgba(0,0,0,.30);
+    }
+
+    /* accents */
     .tile.decision { border-color: rgba(244, 63, 94, .35); box-shadow: 0 0 0 1px rgba(244,63,94,.08) inset; }
     .tile.quiz     { border-color: rgba(168, 85, 247, .35); box-shadow: 0 0 0 1px rgba(168,85,247,.08) inset; }
     .tile.policy   { border-color: rgba(250, 204, 21, .35); box-shadow: 0 0 0 1px rgba(250,204,21,.08) inset; }
@@ -78,195 +137,301 @@
     .tile.bonus    { border-color: rgba(249, 115, 22, .35); box-shadow: 0 0 0 1px rgba(249,115,22,.08) inset; }
     .tile.risk     { border-color: rgba(255, 255, 255, .20); box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset; }
 
-    .tile.active {
-      outline: 2px solid rgba(255,255,255,.65);
-      box-shadow: 0 0 0 5px rgba(255,255,255,.06), 0 18px 28px rgba(0,0,0,.30);
+    .tile.finish{
+      background: linear-gradient(135deg, rgba(255,215,0,.20), rgba(255,255,255,.03));
+      border-color: rgba(255,215,0,.38);
+    }
+    .tile.start{
+      background: linear-gradient(135deg, rgba(96,165,250,.22), rgba(255,255,255,.03));
+      border-color: rgba(96,165,250,.38);
     }
 
-    .tile.finish {
-      background: linear-gradient(135deg, rgba(255,215,0,.18), rgba(255,255,255,.04));
-      border-color: rgba(255,215,0,.35);
-    }
-    .tile.start {
-      background: linear-gradient(135deg, rgba(96,165,250,.18), rgba(255,255,255,.04));
-      border-color: rgba(96,165,250,.35);
-    }
-
-    .token { display:inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; border: 1px solid rgba(255,255,255,.25); }
-    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-
-    button { border: 0; border-radius: 14px; padding: 10px 12px; cursor: pointer; }
-    .btn { background: #fff; color: #111; box-shadow: 0 8px 18px rgba(0,0,0,.35); }
-    .btn2 { background: rgba(255,255,255,.06); color: #fff; border: 1px solid rgba(255,255,255,.14); }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-
-    .pill {
+    .token{
       display:inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      color: rgba(255,255,255,.92);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+      border: 1px solid rgba(255,255,255,.25);
     }
 
-    .small { font-size: 12px; opacity: .82; }
-    .choice { display:grid; gap: 10px; margin-top: 10px; }
+    button{
+      border: 0;
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor:pointer;
+      font-weight: 650;
+      letter-spacing: .1px;
+    }
+    .btn{
+      background: #fff;
+      color:#111;
+      box-shadow: 0 8px 18px rgba(0,0,0,.35);
+    }
+    .btn2{
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      border: 1px solid rgba(255,255,255,.14);
+    }
+    button:disabled{ opacity:.5; cursor:not-allowed; }
 
-    #eventBox{
+    select{
+      background: rgba(255,255,255,.06);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.14);
       padding: 10px 12px;
       border-radius: 14px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.10);
+      outline: none;
+      font-weight: 650;
+    }
+    option{ color:#111; }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .small{ font-size: 12px; color: var(--muted); }
+
+    /* Right panel: make it “present”, sticky on wide screens */
+    .sidebar{
+      position: sticky;
+      top: 14px;
     }
 
-    /* Neater log */
-    .log {
-      max-height: 280px;
+    .stat-card{
+      background: var(--card2);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .stat-head{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .stat-name{ font-weight: 850; }
+
+    .helpnote{
+      margin-top: 10px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      padding: 10px 12px;
+      line-height: 1.3;
+    }
+
+    hr{ border:none; border-top:1px solid rgba(255,255,255,.10); margin: 12px 0; }
+
+    .log{
+      max-height: 320px;
       overflow:auto;
       font-size: 12px;
       line-height: 1.35;
       background: rgba(255,255,255,.02);
       border: 1px solid rgba(255,255,255,.08);
       border-radius: 14px;
-      padding: 8px 10px;
+      padding: 10px 12px;
     }
-    .log-item{
-      padding: 8px 0;
-      border-bottom: 1px dashed rgba(255,255,255,.10);
+    .logrow{
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    .log-item:last-child{ border-bottom: none; }
-    .log-top{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-    }
-    .log-ico{ width:22px; opacity:.95; }
-    .log-title{ font-weight: 800; letter-spacing:.1px; }
-    .log-detail{ opacity:.82; margin-top:2px; }
+    .logtitle{ font-weight: 780; }
+    .logdetail{ margin-top:3px; color: rgba(255,255,255,.78); }
 
-    .stat-card {
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-    .stat-head { display:flex; justify-content:space-between; align-items:center; gap: 10px; }
-    .stat-name { font-weight: 900; letter-spacing: .2px; }
-
-    hr { border: none; border-top: 1px solid rgba(255,255,255,.10); margin: 12px 0; }
-
-    /* ---------- Rules Modal ---------- */
-    .modal-backdrop {
-      position: fixed; inset: 0;
+    /* Modals (Rules + Turn Card) */
+    .backdrop{
+      position:fixed;
+      inset:0;
       background: rgba(0,0,0,.62);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display:none;
+      align-items:center;
+      justify-content:center;
       z-index: 9999;
       padding: 16px;
     }
-    .modal {
+
+    .modal{
       width: min(920px, 96vw);
-      max-height: 86vh;
-      overflow: auto;
+      max-height: 88vh;
+      overflow:auto;
       background: #0b0d10;
-      color: #fff;
+      color:#fff;
       border: 1px solid rgba(255,255,255,.12);
       border-radius: 18px;
       box-shadow: 0 20px 60px rgba(0,0,0,.55);
     }
-    .modal-header {
+
+    .modal-header{
       position: sticky;
-      top: 0;
-      background: #0b0d10;
+      top:0;
+      background:#0b0d10;
       padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       border-bottom: 1px solid rgba(255,255,255,.10);
     }
-    .modal-title { font-size: 18px; font-weight: 900; }
-    .modal-x {
-      appearance: none; border: 0; background: transparent;
-      color: #fff; font-size: 22px; cursor: pointer; opacity: .85;
+    .modal-title{ font-size: 18px; font-weight: 900; }
+    .modal-x{
+      appearance:none;
+      border:0;
+      background:transparent;
+      color:#fff;
+      font-size: 22px;
+      cursor:pointer;
+      opacity:.85;
     }
-    .modal-x:hover { opacity: 1; }
-    .modal-body { padding: 14px 16px 16px; line-height: 1.35; font-size: 14px; color: rgba(255,255,255,.92); }
-    .rules-grid { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
-    @media (max-width: 800px) { .rules-grid { grid-template-columns: 1fr; } }
-    .rules-card {
+    .modal-x:hover{ opacity: 1; }
+
+    .modal-body{ padding: 14px 16px 16px; line-height: 1.35; font-size: 14px; color: rgba(255,255,255,.92); }
+
+    .rules-grid{ display:grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 800px){ .rules-grid{ grid-template-columns: 1fr; } }
+
+    .rules-card{
       background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.10);
       border-radius: 14px;
       padding: 10px 12px;
     }
-    .modal-footer {
+
+    .modal-footer{
       padding: 12px 16px 16px;
-      display: flex;
+      display:flex;
       gap: 10px;
-      align-items: center;
-      justify-content: space-between;
+      align-items:center;
+      justify-content:space-between;
       border-top: 1px solid rgba(255,255,255,.10);
+      flex-wrap: wrap;
     }
-    .modal-footer .left { display:flex; gap:10px; align-items:center; color: rgba(255,255,255,.85); font-size: 13px; }
-    .modal-footer .right { display:flex; gap:10px; }
-    .btn-modal {
+
+    .btn-modal{
       border-radius: 12px;
       padding: 10px 12px;
-      cursor: pointer;
+      cursor:pointer;
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
-      color: #fff;
+      color:#fff;
+      font-weight: 750;
     }
-    .btn-modal.primary { background: #fff; color: #111; border-color: transparent; }
+    .btn-modal.primary{
+      background:#fff;
+      color:#111;
+      border-color: transparent;
+    }
+
+    /* Turn Card modal - more “game-like” */
+    .turnbox{
+      width: min(760px, 96vw);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+    }
+
+    .turn-meta{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap: wrap;
+    }
+    .turn-title{
+      font-size: 20px;
+      font-weight: 950;
+      letter-spacing:.2px;
+    }
+    .turn-prompt{
+      margin-top: 10px;
+      font-size: 15px;
+      color: rgba(255,255,255,.90);
+    }
+    .choices{
+      display:grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .choiceBtn{
+      text-align:left;
+      padding: 14px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.14);
+      color:#fff;
+      font-weight: 750;
+      line-height: 1.25;
+    }
+    .choiceBtn:hover{ border-color: rgba(255,255,255,.25); }
+    .choiceSub{
+      display:block;
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(255,255,255,.72);
+      font-weight: 600;
+    }
   </style>
 </head>
 
 <body>
-  <h1>EconNation</h1>
-  <div class="sub">Race to the finish by making smart economic choices. Designed for ~20 minutes of play.</div>
+  <div class="topbar">
+    <div>
+      <h1>EconNation</h1>
+      <div class="sub">Race to the finish by making smart economic choices. Designed for ~20 minutes of play.</div>
+    </div>
+
+    <div class="controls">
+      <span class="pill">Players:
+        <select id="playerSelect" title="Choose 2–4 players">
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </span>
+      <button id="newGameBtn" class="btn2">New Game</button>
+      <button id="rulesBtnTop" class="btn2">Rules</button>
+      <button id="rollBtnTop" class="btn">Roll Dice</button>
+    </div>
+  </div>
 
   <div class="wrap">
+    <!-- BOARD -->
     <div class="card">
-      <h2 style="margin:0 0 10px;">Board</h2>
-      <div id="board" class="board"></div>
-
-      <div class="row" style="margin-top:12px;">
-        <button id="rollBtn" class="btn">Roll Dice</button>
-        <button id="rulesBtn" class="btn2">Rules</button>
-
-        <span class="pill" id="diceOut">Dice: —</span>
-        <span class="pill" id="progressOut">Progress: 0 / 59</span>
-        <span class="pill" id="turnOut">Turn: Player 1</span>
-        <span class="pill" id="goalOut">Goal: Finish + Prosperity ≥ 15</span>
+      <div class="row" style="justify-content:space-between; align-items:flex-end;">
+        <div style="font-weight:900; font-size: 20px;">Board</div>
+        <div class="row">
+          <span class="pill" id="diceOut">Dice: —</span>
+          <span class="pill" id="progressOut">Progress: 0 / 59</span>
+          <span class="pill" id="turnOut">Turn: Player 1</span>
+          <span class="pill" id="goalOut">Goal: Finish + Prosperity ≥ 15</span>
+        </div>
       </div>
 
       <div class="small" style="margin-top:10px;">
         Tip: High GDP is good, but watch unemployment + inflation + inequality. Cash helps you survive shocks.
       </div>
+
+      <div id="board" class="board" style="margin-top:12px;"></div>
     </div>
 
-    <div class="card">
-      <h2 style="margin:0 0 10px;">Dashboard</h2>
+    <!-- DASHBOARD -->
+    <div class="card sidebar">
+      <div style="font-weight:950; font-size: 20px;">Dashboard</div>
+      <div class="small" style="margin-top:6px;">
+        What these mean: <strong>GDP</strong> = output, <strong>Unemp</strong> = joblessness, <strong>Inflation</strong> = CPI change, <strong>Inequality</strong> = Lorenz gap.
+      </div>
+
+      <hr>
+
       <div id="stats"></div>
 
+      <div class="helpnote">
+        <div style="font-weight:850;">Win Condition</div>
+        <div class="small" style="margin-top:6px;">
+          You must reach <strong>Finish</strong> and have a <strong>Prosperity Score ≥ 15</strong>. The score rewards growth + stability.
+        </div>
+      </div>
+
       <hr>
 
-      <h3 style="margin:0 0 6px;">Tile</h3>
-      <div id="eventBox" class="small">Roll to begin.</div>
-      <div id="choices" class="choice"></div>
-
-      <hr>
-
-      <h3 style="margin:0 0 6px;">Game Log</h3>
-      <div id="log" class="log"></div>
+      <div style="font-weight:900; font-size: 16px;">Game Log</div>
+      <div id="log" class="log" style="margin-top:10px;"></div>
     </div>
   </div>
 
-  <!-- Rules Modal -->
-  <div id="rulesModal" class="modal-backdrop" style="display:none;">
+  <!-- RULES MODAL -->
+  <div id="rulesModal" class="backdrop">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
       <div class="modal-header">
         <div class="modal-title" id="rulesTitle">How to Play — EconNation</div>
@@ -284,11 +449,10 @@
           </div>
 
           <div class="rules-card">
-            <strong>What Prosperity means</strong>
+            <strong>Prosperity Score</strong>
             <div style="margin-top:6px;">
-              Prosperity Score rewards <em>growth + stability</em>.
-              It goes up with strong <strong>GDP</strong> and smart choices, and goes down when
-              <strong>unemployment</strong>, <strong>inflation (CPI)</strong>, or <strong>inequality</strong> get out of control.
+              Goes up with strong <strong>GDP</strong> and smart decisions. Goes down when
+              <strong>unemployment</strong>, <strong>inflation</strong>, or <strong>inequality</strong> rise too much.
             </div>
           </div>
 
@@ -296,9 +460,9 @@
             <strong>Your Turn</strong>
             <ol style="margin:6px 0 0 18px;">
               <li>Click <strong>Roll Dice</strong></li>
-              <li>Move to a tile</li>
-              <li>Answer the prompt (A/B) or quick quiz</li>
-              <li>Stats update immediately (and sometimes later)</li>
+              <li>Move to the landing tile</li>
+              <li>A big <strong>Turn Card</strong> pops up — pick A or B</li>
+              <li>Stats update immediately (some effects can be delayed)</li>
             </ol>
           </div>
 
@@ -312,28 +476,28 @@
           <div class="rules-card">
             <strong>Course Connection (CIE3M)</strong>
             <div style="margin-top:6px;">
-              Scenarios cover scarcity/opportunity cost, supply &amp; demand, price controls, GDP/CPI,
-              business cycle, fiscal vs monetary policy, budgeting/investing, and trade/currency.
+              Scarcity/opportunity cost, supply &amp; demand, price controls, unemployment, GDP/CPI,
+              business cycle, fiscal vs monetary policy, budgeting/investing, trade + currency.
             </div>
           </div>
 
           <div class="rules-card">
             <strong>Playtime</strong>
             <div style="margin-top:6px;">
-              The board has 60 tiles; with 2–4 players it typically lasts ~20 minutes.
+              60 tiles; with 2–4 players it typically lasts ~20 minutes.
             </div>
           </div>
         </div>
       </div>
 
       <div class="modal-footer">
-        <div class="left">
+        <div class="small" style="display:flex; gap:10px; align-items:center;">
           <label style="display:flex; gap:8px; align-items:center; cursor:pointer;">
             <input type="checkbox" id="dontShowRules" />
             Don’t show again
           </label>
         </div>
-        <div class="right">
+        <div style="display:flex; gap:10px;">
           <button class="btn-modal" id="rulesCloseBtn">Close</button>
           <button class="btn-modal primary" id="rulesStartBtn">Start Game</button>
         </div>
@@ -341,532 +505,624 @@
     </div>
   </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  /** ========================
-   * SETTINGS
-   * ======================== */
-  const SETTINGS = {
-    totalTiles: 60,
-    players: 2,          // change to 3 or 4 if needed
-    finishTile: 59,
-    prosperityToWin: 15,
-  };
+  <!-- TURN CARD MODAL (centered prompt) -->
+  <div id="turnModal" class="backdrop">
+    <div class="modal turnbox" role="dialog" aria-modal="true" aria-labelledby="turnTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="turnTitle">Turn Card</div>
+        <button class="modal-x" id="turnCloseX" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="turn-meta">
+          <div class="pill" id="turnMetaPill">Player 1 • Tile #0</div>
+          <div class="pill" id="turnTypePill">❓ Decision</div>
+        </div>
 
-  const TILE_TYPES = [
-    { type: "decision", weight: 42 },
-    { type: "quiz",     weight: 16 },
-    { type: "policy",   weight: 12 },
-    { type: "market",   weight: 10 },
-    { type: "trade",    weight: 8  },
-    { type: "bonus",    weight: 7  },
-    { type: "risk",     weight: 5  },
-  ];
+        <div class="turn-title" id="turnCardTitle" style="margin-top:12px;">Title</div>
+        <div class="turn-prompt" id="turnCardPrompt">Prompt</div>
 
-  const TILE_LABEL = {
-    start:   { icon: "🏁", name: "Start" },
-    finish:  { icon: "🏆", name: "Finish" },
-    decision:{ icon: "❓", name: "Decision" },
-    quiz:    { icon: "🧠", name: "Quick Quiz" },
-    policy:  { icon: "⚖️", name: "Policy" },
-    market:  { icon: "📦", name: "Market" },
-    trade:   { icon: "🌍", name: "Trade" },
-    bonus:   { icon: "💰", name: "Bonus" },
-    risk:    { icon: "🎲", name: "Risk" },
-  };
-
-  function weightedPick(options) {
-    const total = options.reduce((s,o)=>s+o.weight,0);
-    let r = Math.random() * total;
-    for (const o of options) {
-      r -= o.weight;
-      if (r <= 0) return o.type;
-    }
-    return options[0].type;
-  }
-
-  function tileTypeFor(tileIndex) {
-    if (tileIndex === 0) return "start";
-    if (tileIndex === SETTINGS.finishTile) return "finish";
-    return weightedPick(TILE_TYPES);
-  }
-
-  // Hidden unit progression (no labels shown to players)
-  function unitBucketForProgress(tileIndex) {
-    const p = tileIndex / SETTINGS.totalTiles;
-    if (p < 0.25) return "unit1";
-    if (p < 0.50) return "unit2";
-    if (p < 0.75) return "unit3";
-    return "unit45";
-  }
-
-  /** ========================
-   * CONTENT (balanced + course-based)
-   * ======================== */
-  const CARDS = {
-    unit1: [
-      { title:"Scarcity", prompt:"You can only fund ONE project this year (limited resources).", A:{text:"Build factories (fast output)", effects:{gdp:+2, cash:-200, ineq:+1}}, B:{text:"Invest in education (long-term)", effects:{cash:-150}, delayed:{inTurns:2, effects:{gdp:+3, unemp:-1, prosperity:+1}}} },
-      { title:"Opportunity Cost", prompt:"You spend heavily on one goal. What trade-off do you accept?", A:{text:"Big infrastructure push", effects:{cash:-250}, delayed:{inTurns:1, effects:{gdp:+3}}}, B:{text:"Social programs now", effects:{cash:-250, prosperity:+1, ineq:-1}} },
-      { title:"PPF Trade-Off", prompt:"On a PPF, increasing one output usually means:", A:{text:"Less of something else (trade-off)", effects:{prosperity:+1}}, B:{text:"Everything increases equally", effects:{prosperity:-1}} },
-      { title:"Factors of Production", prompt:"Training workers builds which resource?", A:{text:"Labour (human capital)", effects:{unemp:-1, gdp:+1, prosperity:+1}}, B:{text:"Land", effects:{prosperity:-1}} },
-    ],
-    unit2: [
-      { title:"Supply & Demand", prompt:"Demand rises, supply stays the same. Most likely result?", A:{text:"Price rises", effects:{inflation:+1, cash:+150, prosperity:+1}}, B:{text:"Price falls", effects:{prosperity:-1}} },
-      { title:"Price Ceiling", prompt:"A price ceiling is set below equilibrium (rent).", A:{text:"Affordability improves", effects:{prosperity:+1, ineq:-1}}, B:{text:"Shortage risk later", effects:{}, delayed:{inTurns:1, effects:{gdp:-1, unemp:+1}}} },
-      { title:"Minimum Wage", prompt:"Minimum wage increases. Choose the main trade-off.", A:{text:"Higher incomes boost demand", effects:{gdp:+1, ineq:-1, inflation:+1}}, B:{text:"Higher costs may reduce hiring", effects:{unemp:+1, cash:+100}} },
-      { title:"Unemployment", prompt:"High unemployment usually means:", A:{text:"Idle resources + lower output", effects:{prosperity:+1}}, B:{text:"Higher GDP automatically", effects:{prosperity:-1}} },
-    ],
-    unit3: [
-      { title:"Recession", prompt:"GDP falling + unemployment rising. Pick a response.", A:{text:"Fiscal: increase gov spending", effects:{cash:-300, gdp:+2, unemp:-1}}, B:{text:"Monetary: lower interest rates", effects:{gdp:+1, inflation:+1}, delayed:{inTurns:1, effects:{gdp:+1}}} },
-      { title:"Inflation (CPI)", prompt:"CPI rises quickly. What happens to purchasing power?", A:{text:"Purchasing power decreases", effects:{prosperity:+1}}, B:{text:"Purchasing power increases", effects:{prosperity:-1}} },
-      { title:"Fight Inflation", prompt:"Inflation is high. Best tool to cool demand is:", A:{text:"Raise interest rates", effects:{inflation:-2, gdp:-1, prosperity:+1}}, B:{text:"Print money", effects:{inflation:+2, prosperity:-1}} },
-      { title:"Inequality (Lorenz)", prompt:"Inequality rises. Choose a policy approach.", A:{text:"Progressive taxes + transfers", effects:{cash:-150, ineq:-2, prosperity:+1}}, B:{text:"Cut taxes to attract investment", effects:{gdp:+2, ineq:+1}} },
-    ],
-    unit45: [
-      { title:"Budgeting", prompt:"You build an emergency fund instead of spending everything.", A:{text:"Save now, safer later", effects:{cash:-100, prosperity:+1}, delayed:{inTurns:2, effects:{cash:+250}}}, B:{text:"Spend now for growth", effects:{cash:-200, gdp:+2}} },
-      { title:"Investing", prompt:"Pick an investment style.", A:{text:"Diversified fund (steady)", effects:{cash:-200}, delayed:{inTurns:1, effects:{cash:+260, prosperity:+1}}}, B:{text:"High-risk stock (gamble)", effects:{cash:-200}, delayed:{inTurns:1, rng:true}} },
-      { title:"Comparative Advantage", prompt:"Why do countries trade?", A:{text:"Specialize (lower opportunity cost)", effects:{gdp:+2, prosperity:+1}}, B:{text:"Trade always harms both sides", effects:{prosperity:-1}} },
-      { title:"Currency Change", prompt:"Your currency weakens. Likely effect?", A:{text:"Exports cheaper → more demand", effects:{gdp:+1, cash:+100, prosperity:+1}}, B:{text:"Imports cheaper → inflation drops", effects:{prosperity:-1}} },
-    ],
-  };
-
-  const QUIZZES = [
-    { q:"Economics is the study of:", A:"Choices with scarce resources", B:"Only stock markets", correct:"A", ok:{prosperity:+1}, bad:{prosperity:-1} },
-    { q:"When demand rises and supply stays the same, price usually:", A:"Rises", B:"Falls", correct:"A", ok:{cash:+100, inflation:+1}, bad:{prosperity:-1} },
-    { q:"Fiscal policy is mainly about:", A:"Taxes + government spending", B:"Only interest rates", correct:"A", ok:{prosperity:+1}, bad:{prosperity:-1} },
-    { q:"CPI is used to measure:", A:"Inflation", B:"Unemployment", correct:"A", ok:{prosperity:+1}, bad:{prosperity:-1} },
-    { q:"Comparative advantage means:", A:"Lower opportunity cost", B:"Being best at everything", correct:"A", ok:{gdp:+1, prosperity:+1}, bad:{prosperity:-1} },
-  ];
-
-  const MARKET_SHOCKS = [
-    { title:"Oil Price Shock", prompt:"Energy prices rise suddenly.", A:"Absorb the shock", effA:{inflation:+2, cash:-50}, B:"Subsidize fuel briefly", effB:{cash:-150, inflation:+1, prosperity:+1} },
-    { title:"Tech Boom", prompt:"A new technology boosts productivity.", A:"Invest in it", effA:{gdp:+2, cash:-100}, B:"Ignore it for now", effB:{cash:+100, prosperity:-1} },
-    { title:"Supply Disruption", prompt:"Supply falls (producer shutdown).", A:"Support producers", effA:{cash:-200, gdp:+1}, B:"Do nothing", effB:{inflation:+1, unemp:+1} },
-  ];
-
-  const BONUSES = [
-    { title:"Good Budgeting", prompt:"You stuck to your budget this month.", A:"Nice!", effA:{cash:+150, prosperity:+1}, B:"Over-spend anyway", effB:{cash:-100, prosperity:-1} },
-    { title:"Entrepreneurship", prompt:"A local business innovates and expands.", A:"Support it", effA:{gdp:+1, cash:-100, prosperity:+1}, B:"Do nothing", effB:{prosperity:-1} },
-  ];
-
-  /** ========================
-   * STATE
-   * ======================== */
-  const state = {
-    currentPlayer: 0,
-    positions: Array.from({length: SETTINGS.players}, () => 0),
-    players: Array.from({length: SETTINGS.players}, (_, i) => ({
-      name: `Player ${i+1}`,
-      cash: 1000,
-      gdp: 10,
-      unemp: 5,
-      inflation: 2,
-      ineq: 4,
-      prosperity: 0,
-      queue: [],
-    })),
-    awaitingChoice: false,
-    gameOver: false,
-  };
-
-  function clampStats(p) {
-    p.cash = Math.max(0, p.cash);
-    p.gdp = Math.max(0, p.gdp);
-    p.unemp = Math.min(25, Math.max(0, p.unemp));
-    p.inflation = Math.min(15, Math.max(0, p.inflation));
-    p.ineq = Math.min(10, Math.max(0, p.ineq));
-  }
-
-  function prosperityScore(p) {
-    return Math.round(
-      (p.gdp)
-      - 2*(p.unemp)
-      - 1.5*(p.inflation)
-      - 1.5*(p.ineq)
-      + (p.cash/200)
-      + (p.prosperity)
-    );
-  }
-
-  function applyEffects(p, effects) {
-    if (!effects) return;
-    for (const [k,v] of Object.entries(effects)) {
-      if (k in p) p[k] += v;
-    }
-    clampStats(p);
-  }
-
-  /** ========================
-   * UI HOOKS
-   * ======================== */
-  const boardEl = document.getElementById("board");
-  const rollBtn = document.getElementById("rollBtn");
-  const rulesBtn = document.getElementById("rulesBtn");
-  const diceOut = document.getElementById("diceOut");
-  const progressOut = document.getElementById("progressOut");
-  const turnOut = document.getElementById("turnOut");
-  const goalOut = document.getElementById("goalOut");
-  const statsEl = document.getElementById("stats");
-  const eventBox = document.getElementById("eventBox");
-  const choicesEl = document.getElementById("choices");
-  const logEl = document.getElementById("log");
-
-  const rulesModal = document.getElementById("rulesModal");
-  const rulesCloseX = document.getElementById("rulesCloseX");
-  const rulesCloseBtn = document.getElementById("rulesCloseBtn");
-  const rulesStartBtn = document.getElementById("rulesStartBtn");
-  const dontShowRules = document.getElementById("dontShowRules");
-
-  function logEntry({ icon="•", title="", detail="" }) {
-    const div = document.createElement("div");
-    div.className = "log-item";
-    div.innerHTML = `
-      <div class="log-top">
-        <div class="log-ico">${icon}</div>
-        <div>
-          <div class="log-title">${title}</div>
-          ${detail ? `<div class="log-detail">${detail}</div>` : ""}
+        <div class="choices" id="turnChoices"></div>
+      </div>
+      <div class="modal-footer">
+        <div class="small">Pick A or B to continue.</div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-modal" id="turnCancelBtn">Cancel</button>
         </div>
       </div>
-    `;
-    logEl.prepend(div);
+    </div>
+  </div>
+
+<script>
+/** ========================
+ * SETTINGS / LABELS
+ * ======================== */
+let SETTINGS = {
+  totalTiles: 60,
+  players: 2,
+  finishTile: 59,
+  prosperityToWin: 15,
+};
+
+const TILE_TYPES = [
+  { type: "decision", weight: 42 },
+  { type: "quiz",     weight: 16 },
+  { type: "policy",   weight: 12 },
+  { type: "market",   weight: 10 },
+  { type: "trade",    weight: 8  },
+  { type: "bonus",    weight: 7  },
+  { type: "risk",     weight: 5  },
+];
+
+const TILE_LABEL = {
+  start:   { icon: "🏁", name: "Start" },
+  finish:  { icon: "🏆", name: "Finish" },
+  decision:{ icon: "❓", name: "Decision" },
+  quiz:    { icon: "🧠", name: "Quick Quiz" },
+  policy:  { icon: "⚖️", name: "Policy" },
+  market:  { icon: "📦", name: "Market" },
+  trade:   { icon: "🌍", name: "Trade" },
+  bonus:   { icon: "💰", name: "Bonus" },
+  risk:    { icon: "🎲", name: "Risk" },
+};
+
+function weightedPick(options) {
+  const total = options.reduce((s,o)=>s+o.weight,0);
+  let r = Math.random() * total;
+  for (const o of options) {
+    r -= o.weight;
+    if (r <= 0) return o.type;
   }
+  return options[0].type;
+}
 
-  // Safety: if any old code calls log("..."), it won't crash
-  function log(msg){ logEntry({ icon:"•", title: msg }); }
-
-  /** ========================
-   * RENDER
-   * ======================== */
-  function renderHeader(lastDice="—") {
-    diceOut.textContent = `Dice: ${lastDice}`;
-    const pos = state.positions[state.currentPlayer];
-    progressOut.textContent = `Progress: ${pos} / ${SETTINGS.finishTile}`;
-    turnOut.textContent = `Turn: ${state.players[state.currentPlayer].name}`;
-    goalOut.textContent = `Goal: Finish + Prosperity ≥ ${SETTINGS.prosperityToWin}`;
+/** IMPORTANT FIX:
+ * Pre-generate a stable board so tiles don't change each render.
+ */
+function generateBoardTypes() {
+  const types = [];
+  for (let i=0; i<SETTINGS.totalTiles; i++){
+    if (i === 0) types.push("start");
+    else if (i === SETTINGS.finishTile) types.push("finish");
+    else types.push(weightedPick(TILE_TYPES));
   }
+  return types;
+}
 
-  function renderStats() {
-    statsEl.innerHTML = "";
-    state.players.forEach(p => {
-      const box = document.createElement("div");
-      box.className = "stat-card";
-      box.innerHTML = `
-        <div class="stat-head">
-          <div class="stat-name">${p.name}</div>
-          <span class="pill">Prosperity Score: ${prosperityScore(p)}</span>
-        </div>
-        <div class="row" style="margin-top:10px;">
-          <span class="pill">Cash: $${p.cash}</span>
-          <span class="pill">GDP: ${p.gdp}</span>
-          <span class="pill">Unemp: ${p.unemp}%</span>
-          <span class="pill">Inflation: ${p.inflation}%</span>
-          <span class="pill">Inequality: ${p.ineq}/10</span>
-        </div>
-        <div class="small" style="margin-top:8px;">Queued effects: ${p.queue.length}</div>
-      `;
-      statsEl.appendChild(box);
-    });
+/** hidden unit progression for content balance */
+function unitBucketForProgress(tileIndex) {
+  const p = tileIndex / SETTINGS.totalTiles;
+  if (p < 0.25) return "unit1";
+  if (p < 0.50) return "unit2";
+  if (p < 0.75) return "unit3";
+  return "unit45";
+}
+
+/** ========================
+ * CONTENT DECKS (course based + short)
+ * ======================== */
+const CARDS = {
+  unit1: [
+    { title:"Scarcity", prompt:"Limited resources: choose ONE project to fund.", A:{text:"Build factories (fast output)", effects:{gdp:+2, cash:-200, ineq:+1}}, B:{text:"Invest in education (long-term)", effects:{cash:-150}, delayed:{inTurns:2, effects:{gdp:+3, unemp:-1, prosperity:+1}}}},
+    { title:"Opportunity Cost", prompt:"You can’t do everything at once. What trade-off do you accept?", A:{text:"Infrastructure now", effects:{cash:-250}, delayed:{inTurns:1, effects:{gdp:+3}}}, B:{text:"Social programs now", effects:{cash:-250, prosperity:+1, ineq:-1}}},
+    { title:"Factors of Production", prompt:"Training workers strengthens which resource?", A:{text:"Labour (human capital)", effects:{unemp:-1, gdp:+1, prosperity:+1}}, B:{text:"Land", effects:{prosperity:-1}}},
+    { title:"PPF Trade-Off", prompt:"On a PPF, increasing one output usually means:", A:{text:"Less of something else (trade-off)", effects:{prosperity:+1}}, B:{text:"Everything increases equally", effects:{prosperity:-1}}},
+  ],
+  unit2: [
+    { title:"Supply & Demand", prompt:"Demand rises, supply stays the same. Most likely result?", A:{text:"Price rises", effects:{inflation:+1, cash:+150, prosperity:+1}}, B:{text:"Price falls", effects:{prosperity:-1}}},
+    { title:"Price Ceiling", prompt:"Rent ceiling below equilibrium:", A:{text:"More affordable now", effects:{prosperity:+1, ineq:-1}}, B:{text:"Shortage risk later", effects:{}, delayed:{inTurns:1, effects:{gdp:-1, unemp:+1}}}},
+    { title:"Price Floor", prompt:"Price floor above equilibrium in farming:", A:{text:"Surplus appears", effects:{cash:-100, prosperity:+1}}, B:{text:"No market change", effects:{prosperity:-1}}},
+    { title:"Minimum Wage", prompt:"Minimum wage rises. What effect is most realistic?", A:{text:"Higher worker income + demand", effects:{gdp:+1, ineq:-1, inflation:+1}}, B:{text:"Some higher costs for firms", effects:{unemp:+1, cash:+100}}},
+    { title:"Unemployment", prompt:"High unemployment usually means:", A:{text:"Idle resources, lower output", effects:{prosperity:+1}}, B:{text:"Higher GDP automatically", effects:{prosperity:-1}}},
+  ],
+  unit3: [
+    { title:"Recession Response", prompt:"GDP falling + unemployment rising. Choose a policy response.", A:{text:"Fiscal: increase gov spending", effects:{cash:-300, gdp:+2, unemp:-1}}, B:{text:"Monetary: lower interest rates", effects:{gdp:+1, inflation:+1}, delayed:{inTurns:1, effects:{gdp:+1}}}},
+    { title:"Inflation (CPI)", prompt:"CPI rises quickly. Purchasing power usually:", A:{text:"Decreases", effects:{prosperity:+1}}, B:{text:"Increases", effects:{prosperity:-1}}},
+    { title:"Fight Inflation", prompt:"Best tool to cool demand is:", A:{text:"Raise interest rates", effects:{inflation:-2, gdp:-1, prosperity:+1}}, B:{text:"Print money", effects:{inflation:+2, prosperity:-1}}},
+    { title:"GDP Limits", prompt:"True statement about GDP:", A:{text:"GDP doesn’t measure happiness/equality", effects:{prosperity:+1}}, B:{text:"GDP measures quality of life perfectly", effects:{prosperity:-1}}},
+    { title:"Inequality", prompt:"Inequality rises (Lorenz curve farther from equality).", A:{text:"Progressive taxes + transfers", effects:{cash:-150, ineq:-2, prosperity:+1}}, B:{text:"Cut taxes to attract investment", effects:{gdp:+2, ineq:+1}}},
+  ],
+  unit45: [
+    { title:"Budgeting", prompt:"You build an emergency fund instead of spending everything.", A:{text:"Save now, safer later", effects:{cash:-100, prosperity:+1}, delayed:{inTurns:2, effects:{cash:+250}}}, B:{text:"Spend now for growth", effects:{cash:-200, gdp:+2}}},
+    { title:"Investing", prompt:"Pick an investing style.", A:{text:"Diversified fund (steady)", effects:{cash:-200}, delayed:{inTurns:1, effects:{cash:+260, prosperity:+1}}}, B:{text:"High-risk stock (gamble)", effects:{cash:-200}, delayed:{inTurns:1, rng:true}}},
+    { title:"Comparative Advantage", prompt:"Why do countries trade?", A:{text:"Specialize to increase total output", effects:{gdp:+2, prosperity:+1}}, B:{text:"Trade always harms both sides", effects:{prosperity:-1}}},
+    { title:"Currency Change", prompt:"Your currency weakens. Likely effect?", A:{text:"Exports cheaper → more demand", effects:{gdp:+1, cash:+100, prosperity:+1}}, B:{text:"Imports cheaper → inflation drops", effects:{prosperity:-1}}},
+    { title:"Big Purchase", prompt:"Best move for a big purchase (car/house) is:", A:{text:"Budget + compare total costs (interest)", effects:{prosperity:+1}}, B:{text:"Buy immediately without planning", effects:{cash:-150, prosperity:-1}}},
+  ],
+};
+
+const QUIZZES = [
+  { q:"Economics is the study of:", A:"Choices with scarce resources", B:"Only stock markets", correct:"A", ok:{prosperity:+1}, bad:{prosperity:-1} },
+  { q:"Demand rises, supply same → price usually:", A:"Rises", B:"Falls", correct:"A", ok:{cash:+100, inflation:+1}, bad:{prosperity:-1} },
+  { q:"Fiscal policy is mainly:", A:"Taxes + gov spending", B:"Stocks only", correct:"A", ok:{prosperity:+1}, bad:{prosperity:-1} },
+  { q:"CPI measures:", A:"Inflation", B:"Unemployment", correct:"A", ok:{prosperity:+1}, bad:{prosperity:-1} },
+  { q:"Comparative advantage means:", A:"Lower opportunity cost", B:"Best at everything", correct:"A", ok:{gdp:+1, prosperity:+1}, bad:{prosperity:-1} },
+];
+
+const MARKET_SHOCKS = [
+  { title:"Oil Price Shock", prompt:"Energy prices spike suddenly.", A:"Absorb the shock", eA:{inflation:+2, cash:-50}, B:"Subsidize briefly", eB:{cash:-150, inflation:+1, prosperity:+1} },
+  { title:"Tech Boom", prompt:"New tech boosts productivity.", A:"Invest in it", eA:{gdp:+2, cash:-100}, B:"Ignore for now", eB:{cash:+100, prosperity:-1} },
+  { title:"Supply Disruption", prompt:"Supply falls due to shutdown.", A:"Support producers", eA:{cash:-200, gdp:+1}, B:"Do nothing", eB:{inflation:+1, unemp:+1} },
+];
+
+const BONUSES = [
+  { title:"Good Budgeting", prompt:"You stuck to your budget this month.", A:{text:"Nice!", effects:{cash:+150, prosperity:+1}}, B:{text:"Overspend anyway", effects:{cash:-100, prosperity:-1}} },
+  { title:"Entrepreneurship", prompt:"A local business innovates and expands.", A:{text:"Support it", effects:{gdp:+1, cash:-100, prosperity:+1}}, B:{text:"Do nothing", effects:{prosperity:-1}} },
+];
+
+function randomPick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function tradeOffer(){
+  return { title:"Trade Deal", prompt:"Trade can benefit both sides (comparative advantage). Accept a trade deal?",
+    A:{text:"Accept trade", effects:{gdp:+1, prosperity:+1}},
+    B:{text:"Decline trade", effects:{prosperity:-1}}
+  };
+}
+function riskCard(){
+  return { title:"Investment Risk", prompt:"Take a risk for a possible reward?",
+    A:{text:"Take the risk (coin flip next turn)", effects:{}, delayed:{inTurns:1, rng:true}},
+    B:{text:"Play safe", effects:{prosperity:+1, cash:+50}}
+  };
+}
+function quizCard(){
+  const q = randomPick(QUIZZES);
+  return { title:"Quick Quiz", prompt:q.q,
+    A:{text:q.A, effects:(q.correct==="A"?q.ok:q.bad)},
+    B:{text:q.B, effects:(q.correct==="B"?q.ok:q.bad)}
+  };
+}
+function marketCard(){
+  const m = randomPick(MARKET_SHOCKS);
+  return { title:m.title, prompt:m.prompt,
+    A:{text:m.A, effects:m.eA},
+    B:{text:m.B, effects:m.eB}
+  };
+}
+function policyCard(){
+  const options = [
+    { title:"Policy Choice", prompt:"Unemployment is rising. Pick a policy tool.",
+      A:{text:"Fiscal stimulus (spending)", effects:{cash:-250, gdp:+2, unemp:-1}},
+      B:{text:"Cut taxes (demand boost)", effects:{cash:-150, gdp:+1, ineq:+1}}
+    },
+    { title:"Policy Choice", prompt:"Inflation is rising (CPI up). What do you do?",
+      A:{text:"Raise interest rates", effects:{inflation:-2, gdp:-1, prosperity:+1}},
+      B:{text:"Do nothing for now", effects:{inflation:+1, prosperity:-1}}
+    },
+  ];
+  return randomPick(options);
+}
+function decisionCardFor(tileIndex){
+  const bucket = unitBucketForProgress(tileIndex);
+  return randomPick(CARDS[bucket]);
+}
+function bonusCard(){ return randomPick(BONUSES); }
+
+/** ========================
+ * STATE
+ * ======================== */
+let boardTypes = generateBoardTypes();
+
+let state = null;
+
+function newState(playerCount){
+  return {
+    currentPlayer: 0,
+    positions: Array.from({length: playerCount}, ()=>0),
+    players: Array.from({length: playerCount}, (_, i)=>({
+      name:`Player ${i+1}`,
+      cash:1000,
+      gdp:10,
+      unemp:5,
+      inflation:2,
+      ineq:4,
+      prosperity:0,
+      queue:[],
+    })),
+    awaitingChoice:false,
+    gameOver:false,
+  };
+}
+
+function clampStats(p){
+  p.cash = Math.max(0,p.cash);
+  p.gdp = Math.max(0,p.gdp);
+  p.unemp = Math.min(25, Math.max(0,p.unemp));
+  p.inflation = Math.min(15, Math.max(0,p.inflation));
+  p.ineq = Math.min(10, Math.max(0,p.ineq));
+}
+
+function prosperityScore(p){
+  return Math.round(
+    (p.gdp)
+    - 2*(p.unemp)
+    - 1.5*(p.inflation)
+    - 1.5*(p.ineq)
+    + (p.cash/200)
+    + (p.prosperity)
+  );
+}
+
+function applyEffects(p,effects){
+  if(!effects) return;
+  for(const [k,v] of Object.entries(effects)){
+    if(k in p) p[k]+=v;
   }
+  clampStats(p);
+}
 
-  function renderBoard() {
-    boardEl.innerHTML = "";
-    for (let i=0; i<SETTINGS.totalTiles; i++) {
-      const t = tileTypeFor(i);
-      const meta = TILE_LABEL[t];
+function formatEffects(effects){
+  if(!effects) return "";
+  return Object.entries(effects).map(([k,v])=>`${k} ${v>0?"+":""}${v}`).join(", ");
+}
 
-      const tile = document.createElement("div");
-      tile.className = `tile ${t}`;
-      if (t === "start") tile.classList.add("start");
-      if (t === "finish") tile.classList.add("finish");
-      if (i === state.positions[state.currentPlayer]) tile.classList.add("active");
+function runQueuedEffects(p){
+  p.queue.forEach(q=>q.inTurns--);
+  const ready = p.queue.filter(q=>q.inTurns<=0);
+  p.queue = p.queue.filter(q=>q.inTurns>0);
 
-      const tokensHere = state.positions
-        .map((pos, idx) => ({pos, idx}))
-        .filter(x => x.pos === i);
-
-      const tokenRow = document.createElement("div");
-      tokenRow.style.display = "flex";
-      tokenRow.style.flexWrap = "wrap";
-      tokensHere.forEach(tk => {
-        const dot = document.createElement("span");
-        dot.className = "token";
-        dot.style.background = ["#ffffff","#60a5fa","#22c55e","#f87171"][tk.idx] || "#fff";
-        dot.title = state.players[tk.idx].name;
-        tokenRow.appendChild(dot);
-      });
-
-      tile.innerHTML = `
-        <div class="idx">#${i}</div>
-        <div class="name">
-          <span class="icon">${meta.icon}</span>
-          <span class="label">${meta.name}</span>
-        </div>
-      `;
-      tile.appendChild(tokenRow);
-      boardEl.appendChild(tile);
-    }
-  }
-
-  /** ========================
-   * EFFECTS + QUEUE
-   * ======================== */
-  function formatEffects(effects) {
-    if (!effects) return "";
-    return Object.entries(effects)
-      .map(([k,v]) => `${k} ${v>0?"+":""}${v}`)
-      .join(", ");
-  }
-
-  function runQueuedEffects(p) {
-    p.queue.forEach(q => q.inTurns--);
-    const ready = p.queue.filter(q => q.inTurns <= 0);
-    p.queue = p.queue.filter(q => q.inTurns > 0);
-
-    ready.forEach(q => {
-      if (q.rng) {
-        const win = Math.random() < 0.5;
-        if (win) {
-          applyEffects(p, { cash:+450, prosperity:+1 });
-          logEntry({ icon:"📈", title:`${p.name} investment paid off`, detail:"+$450, +1 prosperity" });
-        } else {
-          applyEffects(p, { cash:-200, prosperity:-1 });
-          logEntry({ icon:"📉", title:`${p.name} investment failed`, detail:"-$200, -1 prosperity" });
-        }
-      } else {
-        applyEffects(p, q.effects);
-        logEntry({ icon:"⏳", title:`${p.name} delayed effect triggered`, detail: formatEffects(q.effects) });
+  ready.forEach(q=>{
+    if(q.rng){
+      const win = Math.random() < 0.5;
+      if(win){
+        applyEffects(p,{cash:+450, prosperity:+1});
+        logEntry({icon:"📈", title:`${p.name} investment paid off`, detail:"+$450, +1 prosperity"});
+      }else{
+        applyEffects(p,{cash:-200, prosperity:-1});
+        logEntry({icon:"📉", title:`${p.name} investment failed`, detail:"-$200, -1 prosperity"});
       }
-    });
-  }
-
-  /** ========================
-   * CARD PICKERS
-   * ======================== */
-  const randomPick = (arr) => arr[Math.floor(Math.random()*arr.length)];
-
-  function decisionCardFor(tileIndex) {
-    const bucket = unitBucketForProgress(tileIndex);
-    return randomPick(CARDS[bucket]);
-  }
-
-  function quizCard() {
-    const q = randomPick(QUIZZES);
-    return {
-      title: "Quick Quiz",
-      prompt: q.q,
-      A: { text: q.A, effects: (q.correct==="A") ? q.ok : q.bad },
-      B: { text: q.B, effects: (q.correct==="B") ? q.ok : q.bad },
-    };
-  }
-
-  function policyCard() {
-    const options = [
-      { title:"Policy Choice", prompt:"Unemployment is rising. Choose a policy tool.", A:{text:"Fiscal stimulus (spending)", effects:{cash:-250, gdp:+2, unemp:-1}}, B:{text:"Cut taxes (demand boost)", effects:{cash:-150, gdp:+1, ineq:+1}} },
-      { title:"Policy Choice", prompt:"Inflation is rising (CPI up). What do you do?", A:{text:"Raise interest rates", effects:{inflation:-2, gdp:-1, prosperity:+1}}, B:{text:"Do nothing (wait)", effects:{inflation:+1, prosperity:-1}} },
-    ];
-    return randomPick(options);
-  }
-
-  function marketCard() {
-    const m = randomPick(MARKET_SHOCKS);
-    return { title:m.title, prompt:m.prompt, A:{text:m.A, effects:m.effA}, B:{text:m.B, effects:m.effB} };
-  }
-
-  function bonusCard() {
-    const b = randomPick(BONUSES);
-    return { title:b.title, prompt:b.prompt, A:{text:b.A, effects:b.effA}, B:{text:b.B, effects:b.effB} };
-  }
-
-  function tradeCard() {
-    return {
-      title:"Trade Deal",
-      prompt:"Trade can benefit both sides (comparative advantage). Do you accept a trade deal?",
-      A:{ text:"Accept trade", effects:{gdp:+1, prosperity:+1} },
-      B:{ text:"Decline trade", effects:{prosperity:-1} }
-    };
-  }
-
-  function riskCard() {
-    return {
-      title:"Investment Risk",
-      prompt:"Take a risk for a potential reward?",
-      A:{ text:"Take the risk (coin flip next turn)", effects:{}, delayed:{inTurns:1, rng:true} },
-      B:{ text:"Play it safe", effects:{prosperity:+1, cash:+50} }
-    };
-  }
-
-  /** ========================
-   * CHOICES + WIN
-   * ======================== */
-  function showCard(card) {
-    eventBox.innerHTML = `<strong>${card.title}</strong><div class="small" style="margin-top:6px;">${card.prompt}</div>`;
-    choicesEl.innerHTML = "";
-
-    const mk = (label, which) => {
-      const btn = document.createElement("button");
-      btn.className = "btn2";
-      btn.textContent = label;
-      btn.onclick = () => choose(card, which);
-      return btn;
-    };
-
-    choicesEl.appendChild(mk("A) " + card.A.text, "A"));
-    choicesEl.appendChild(mk("B) " + card.B.text, "B"));
-
-    state.awaitingChoice = true;
-  }
-
-  function checkWin(pIndex) {
-    const p = state.players[pIndex];
-    const atFinish = state.positions[pIndex] >= SETTINGS.finishTile;
-    if (!atFinish) return false;
-
-    const score = prosperityScore(p);
-    if (score >= SETTINGS.prosperityToWin) {
-      state.gameOver = true;
-      rollBtn.disabled = true;
-      choicesEl.innerHTML = "";
-      eventBox.innerHTML = `<strong>🏆 ${p.name} WINS!</strong><div class="small" style="margin-top:6px;">Reached Finish with Prosperity Score ${score}.</div>`;
-      logEntry({ icon:"🏆", title:`Winner: ${p.name}`, detail:`Prosperity Score ${score} (goal ≥ ${SETTINGS.prosperityToWin})` });
-      return true;
+    }else{
+      applyEffects(p,q.effects);
+      logEntry({icon:"⏳", title:`${p.name} delayed effect`, detail: formatEffects(q.effects)});
     }
+  });
+}
 
-    eventBox.innerHTML = `<strong>${p.name} reached the Finish…</strong><div class="small" style="margin-top:6px;">But Prosperity Score (${score}) is below ${SETTINGS.prosperityToWin}. Keep playing.</div>`;
-    logEntry({ icon:"⚠️", title:`${p.name} reached Finish but didn’t qualify`, detail:`Prosperity Score ${score} (need ≥ ${SETTINGS.prosperityToWin})` });
+/** ========================
+ * UI HOOKS
+ * ======================== */
+const boardEl = document.getElementById("board");
+const logEl = document.getElementById("log");
+const statsEl = document.getElementById("stats");
+
+const diceOut = document.getElementById("diceOut");
+const progressOut = document.getElementById("progressOut");
+const turnOut = document.getElementById("turnOut");
+const goalOut = document.getElementById("goalOut");
+
+const rollBtnTop = document.getElementById("rollBtnTop");
+const newGameBtn = document.getElementById("newGameBtn");
+const playerSelect = document.getElementById("playerSelect");
+
+const rulesBtnTop = document.getElementById("rulesBtnTop");
+const rulesModal = document.getElementById("rulesModal");
+const rulesCloseX = document.getElementById("rulesCloseX");
+const rulesCloseBtn = document.getElementById("rulesCloseBtn");
+const rulesStartBtn = document.getElementById("rulesStartBtn");
+const dontShowRules = document.getElementById("dontShowRules");
+
+const turnModal = document.getElementById("turnModal");
+const turnCloseX = document.getElementById("turnCloseX");
+const turnCancelBtn = document.getElementById("turnCancelBtn");
+const turnMetaPill = document.getElementById("turnMetaPill");
+const turnTypePill = document.getElementById("turnTypePill");
+const turnCardTitle = document.getElementById("turnCardTitle");
+const turnCardPrompt = document.getElementById("turnCardPrompt");
+const turnChoices = document.getElementById("turnChoices");
+
+function logEntry({icon="•", title="", detail=""}){
+  const row = document.createElement("div");
+  row.className = "logrow";
+  row.innerHTML = `
+    <div style="display:flex; gap:10px; align-items:flex-start;">
+      <div style="width:22px; opacity:.95;">${icon}</div>
+      <div style="flex:1;">
+        <div class="logtitle">${title}</div>
+        ${detail ? `<div class="logdetail">${detail}</div>` : ""}
+      </div>
+    </div>
+  `;
+  logEl.prepend(row);
+}
+
+function renderHeader(lastDice="—"){
+  diceOut.textContent = `Dice: ${lastDice}`;
+  const pos = state.positions[state.currentPlayer];
+  progressOut.textContent = `Progress: ${pos} / ${SETTINGS.finishTile}`;
+  turnOut.textContent = `Turn: ${state.players[state.currentPlayer].name}`;
+  goalOut.textContent = `Goal: Finish + Prosperity ≥ ${SETTINGS.prosperityToWin}`;
+}
+
+function renderStats(){
+  statsEl.innerHTML = "";
+  state.players.forEach(p=>{
+    const box = document.createElement("div");
+    box.className = "stat-card";
+    box.innerHTML = `
+      <div class="stat-head">
+        <div class="stat-name">${p.name}</div>
+        <span class="pill" title="Higher is better. Uses GDP, unemployment, inflation, inequality, cash, and learning points.">
+          Prosperity: ${prosperityScore(p)}
+        </span>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <span class="pill" title="Money buffer that helps survive shocks">Cash: $${p.cash}</span>
+        <span class="pill" title="Total output / production level">GDP: ${p.gdp}</span>
+        <span class="pill" title="% without jobs">Unemp: ${p.unemp}%</span>
+        <span class="pill" title="CPI inflation rate">Inflation: ${p.inflation}%</span>
+        <span class="pill" title="0 = equal, 10 = very unequal">Inequality: ${p.ineq}/10</span>
+      </div>
+      <div class="small" style="margin-top:8px;">Queued effects: ${p.queue.length}</div>
+    `;
+    statsEl.appendChild(box);
+  });
+}
+
+function renderBoard(){
+  boardEl.innerHTML = "";
+  for(let i=0;i<SETTINGS.totalTiles;i++){
+    const t = boardTypes[i];
+    const meta = TILE_LABEL[t];
+
+    const tile = document.createElement("div");
+    tile.className = `tile ${t}`;
+    if(t==="start") tile.classList.add("start");
+    if(t==="finish") tile.classList.add("finish");
+
+    // highlight current player's position
+    if(i === state.positions[state.currentPlayer]) tile.classList.add("active");
+
+    const tokensHere = state.positions
+      .map((pos, idx)=>({pos, idx}))
+      .filter(x=>x.pos===i);
+
+    const tokenRow = document.createElement("div");
+    tokenRow.style.display = "flex";
+    tokenRow.style.flexWrap = "wrap";
+
+    tokensHere.forEach(tk=>{
+      const dot = document.createElement("span");
+      dot.className = "token";
+      dot.style.background = ["#ffffff","#60a5fa","#22c55e","#f87171"][tk.idx] || "#fff";
+      dot.title = state.players[tk.idx].name;
+      tokenRow.appendChild(dot);
+    });
+
+    tile.innerHTML = `
+      <div class="idx">#${i}</div>
+      <div class="name"><span style="margin-right:6px;">${meta.icon}</span>${meta.name}</div>
+    `;
+    tile.appendChild(tokenRow);
+    boardEl.appendChild(tile);
+  }
+}
+
+/** ========================
+ * GAME FLOW
+ * ======================== */
+function openRules(){ rulesModal.style.display = "flex"; }
+function closeRules(){ rulesModal.style.display = "none"; }
+
+function openTurn(){ turnModal.style.display = "flex"; }
+function closeTurn(){ turnModal.style.display = "none"; }
+
+function checkWin(pIndex){
+  const p = state.players[pIndex];
+  const atFinish = state.positions[pIndex] >= SETTINGS.finishTile;
+  if(!atFinish) return false;
+
+  const score = prosperityScore(p);
+  if(score >= SETTINGS.prosperityToWin){
+    state.gameOver = true;
+    rollBtnTop.disabled = true;
+    logEntry({icon:"🏆", title:`Winner: ${p.name}`, detail:`Prosperity ${score} (goal ≥ ${SETTINGS.prosperityToWin})`});
+
+    // show a final modal
+    turnMetaPill.textContent = `${p.name} • Finish`;
+    turnTypePill.textContent = `🏆 Win!`;
+    turnCardTitle.textContent = `${p.name} wins!`;
+    turnCardPrompt.textContent = `Reached Finish with Prosperity Score ${score}.`;
+    turnChoices.innerHTML = `
+      <button class="choiceBtn" onclick="location.reload()">
+        Restart Game
+        <span class="choiceSub">Reload page to play again</span>
+      </button>
+    `;
+    openTurn();
+    return true;
+  }else{
+    logEntry({icon:"⚠️", title:`${p.name} reached Finish but not qualified`, detail:`Prosperity ${score} < ${SETTINGS.prosperityToWin}`});
     return false;
   }
+}
 
-  function choose(card, which) {
-    const p = state.players[state.currentPlayer];
-
-    // Apply delayed effects first (so the game feels “alive”)
-    runQueuedEffects(p);
-
-    const choice = card[which];
-    applyEffects(p, choice.effects);
-
-    if (choice.delayed) p.queue.push({...choice.delayed});
-
-    logEntry({
-      icon: (which === "A") ? "🅰️" : "🅱️",
-      title: `${p.name} chose ${which}`,
-      detail: `${choice.text}${choice.effects ? " • " + formatEffects(choice.effects) : ""}${choice.delayed ? " • (delayed effect)" : ""}`
-    });
-
-    // gentle penalty if cash hits 0
-    if (p.cash === 0) {
-      applyEffects(p, { prosperity:-1, unemp:+1 });
-      logEntry({ icon:"💸", title:`${p.name} hit $0 cash`, detail:"Financial stress: -1 prosperity, +1 unemployment" });
-    }
-
-    renderStats();
-    choicesEl.innerHTML = "";
-    state.awaitingChoice = false;
-    rollBtn.disabled = true;
-
-    if (!checkWin(state.currentPlayer)) {
-      setTimeout(nextTurn, 250);
-    }
-  }
-
-  function nextTurn() {
-    if (state.gameOver) return;
-    state.currentPlayer = (state.currentPlayer + 1) % SETTINGS.players;
-    renderBoard();
-    renderStats();
-    renderHeader("—");
-    eventBox.textContent = "Roll to continue.";
-    choicesEl.innerHTML = "";
-    rollBtn.disabled = false;
-  }
-
-  function cardForLanding(tileIndex) {
-    const t = tileTypeFor(tileIndex);
-
-    if (t === "start") {
-      return {
-        title:"Start",
-        prompt:`Welcome! Win by reaching Finish AND Prosperity Score ≥ ${SETTINGS.prosperityToWin}.`,
-        A:{ text:"Start with a plan (+cash buffer)", effects:{cash:+100, prosperity:+1} },
-        B:{ text:"Go aggressive early (+GDP, +inflation)", effects:{gdp:+1, inflation:+1} }
-      };
-    }
-    if (t === "finish") {
-      return {
-        title:"Finish",
-        prompt:"You reached the finish line. Try to qualify for the win.",
-        A:{ text:"Stabilize (lower inflation)", effects:{inflation:-1, cash:-50} },
-        B:{ text:"Boost growth (risk inflation)", effects:{gdp:+1, inflation:+1} }
-      };
-    }
-
-    if (t === "decision") return decisionCardFor(tileIndex);
-    if (t === "quiz") return quizCard();
-    if (t === "policy") return policyCard();
-    if (t === "market") return marketCard();
-    if (t === "trade") return tradeCard();
-    if (t === "bonus") return bonusCard();
-    if (t === "risk") return riskCard();
-
-    return decisionCardFor(tileIndex);
-  }
-
-  /** ========================
-   * BUTTONS
-   * ======================== */
-  rollBtn.addEventListener("click", () => {
-    if (state.gameOver || state.awaitingChoice) return;
-
-    const roll = Math.floor(Math.random()*6)+1;
-    const idx = state.currentPlayer;
-
-    let newPos = state.positions[idx] + roll;
-    if (newPos > SETTINGS.finishTile) newPos = SETTINGS.finishTile;
-    state.positions[idx] = newPos;
-
-    renderHeader(roll);
-    renderBoard();
-
-    const tileIndex = state.positions[idx];
-    const p = state.players[idx];
-
-    logEntry({ icon:"🎲", title:`${p.name} rolled ${roll}`, detail:`Moved to tile #${tileIndex}` });
-
-    const card = cardForLanding(tileIndex);
-    showCard(card);
-
-    rollBtn.disabled = true;
-  });
-
-  // Rules modal (always works + auto-show unless hidden)
-  function openRules(){ rulesModal.style.display = "flex"; }
-  function closeRules(){ rulesModal.style.display = "none"; }
-
-  rulesBtn.addEventListener("click", openRules);
-  rulesCloseX.addEventListener("click", closeRules);
-  rulesCloseBtn.addEventListener("click", closeRules);
-  rulesStartBtn.addEventListener("click", closeRules);
-
-  rulesModal.addEventListener("click", (e) => {
-    if (e.target === rulesModal) closeRules();
-  });
-
-  dontShowRules.addEventListener("change", () => {
-    localStorage.setItem("econation_hide_rules", dontShowRules.checked ? "1" : "0");
-  });
-
-  /** ========================
-   * INIT
-   * ======================== */
+function nextTurn(){
+  if(state.gameOver) return;
+  state.currentPlayer = (state.currentPlayer + 1) % SETTINGS.players;
   renderBoard();
   renderStats();
   renderHeader("—");
-  logEntry({ icon:"✅", title:"Game ready", detail:"Click Roll Dice to begin." });
+  rollBtnTop.disabled = false;
+}
 
-  // Auto-open rules unless hidden
+function cardForLanding(tileIndex){
+  const t = boardTypes[tileIndex];
+
+  if(t==="start"){
+    return {
+      title:"Start",
+      prompt:`Welcome! Win by reaching Finish AND Prosperity ≥ ${SETTINGS.prosperityToWin}.`,
+      A:{text:"Start careful (+cash buffer)", effects:{cash:+100, prosperity:+1}},
+      B:{text:"Start aggressive (+GDP, +inflation)", effects:{gdp:+1, inflation:+1}}
+    };
+  }
+
+  if(t==="finish"){
+    return {
+      title:"Finish",
+      prompt:"You’re at the finish line. Do you qualify to win?",
+      A:{text:"Check prosperity now", effects:{}},
+      B:{text:"Stabilize first (-inflation, -unemp, cost $100)", effects:{inflation:-1, unemp:-1, cash:-100}}
+    };
+  }
+
+  if(t==="decision") return decisionCardFor(tileIndex);
+  if(t==="quiz") return quizCard();
+  if(t==="policy") return policyCard();
+  if(t==="market") return marketCard();
+  if(t==="trade") return tradeOffer();
+  if(t==="bonus") return bonusCard();
+  if(t==="risk") return riskCard();
+
+  return decisionCardFor(tileIndex);
+}
+
+function showTurnCard(card, tileIndex){
+  const p = state.players[state.currentPlayer];
+  const t = boardTypes[tileIndex];
+  const meta = TILE_LABEL[t];
+
+  turnMetaPill.textContent = `${p.name} • Tile #${tileIndex}`;
+  turnTypePill.textContent = `${meta.icon} ${meta.name}`;
+  turnCardTitle.textContent = card.title;
+  turnCardPrompt.textContent = card.prompt;
+
+  turnChoices.innerHTML = "";
+  const mk = (which) => {
+    const choice = card[which];
+    const btn = document.createElement("button");
+    btn.className = "choiceBtn";
+    btn.innerHTML = `
+      <div>${which}) ${choice.text}</div>
+      <span class="choiceSub">${choice.effects ? ("Effects: " + formatEffects(choice.effects)) : "Effects: (varies)"}${choice.delayed ? " • (some effects delayed)" : ""}</span>
+    `;
+    btn.addEventListener("click", ()=>choose(card, which));
+    return btn;
+  };
+
+  turnChoices.appendChild(mk("A"));
+  turnChoices.appendChild(mk("B"));
+  openTurn();
+}
+
+function choose(card, which){
+  const p = state.players[state.currentPlayer];
+
+  // run queued effects at start of choosing
+  runQueuedEffects(p);
+
+  const choice = card[which];
+
+  // immediate effects
+  applyEffects(p, choice.effects);
+
+  // delayed effects
+  if(choice.delayed){
+    p.queue.push({ inTurns: choice.delayed.inTurns, effects: choice.delayed.effects, rng: !!choice.delayed.rng });
+  }
+
+  logEntry({ icon: which==="A" ? "🅰️" : "🅱️", title: `${p.name} chose ${which}`, detail: choice.text });
+
+  // gentle penalty for hitting $0
+  if(p.cash === 0){
+    applyEffects(p, { prosperity:-1, unemp:+1 });
+    logEntry({ icon:"💸", title:`${p.name} hit $0 cash`, detail:"Financial stress (-1 prosperity, +1 unemp)" });
+  }
+
+  closeTurn();
+  renderStats();
+  renderBoard();
+  renderHeader("—");
+
+  // if on finish, check win now
+  const idx = state.currentPlayer;
+  if(!checkWin(idx)){
+    // continue
+    setTimeout(nextTurn, 180);
+  }
+}
+
+/** ========================
+ * ROLL
+ * ======================== */
+function roll(){
+  if(state.gameOver || state.awaitingChoice) return;
+
+  rollBtnTop.disabled = true;
+
+  const roll = Math.floor(Math.random()*6)+1;
+  const idx = state.currentPlayer;
+
+  const oldPos = state.positions[idx];
+  let newPos = oldPos + roll;
+  if(newPos > SETTINGS.finishTile) newPos = SETTINGS.finishTile;
+  state.positions[idx] = newPos;
+
+  renderHeader(roll);
+  renderBoard();
+
+  const p = state.players[idx];
+  logEntry({ icon:"🎲", title:`${p.name} rolled ${roll}`, detail:`Moved to tile #${newPos}` });
+
+  const card = cardForLanding(newPos);
+  showTurnCard(card, newPos);
+}
+
+/** ========================
+ * NEW GAME / PLAYERS
+ * ======================== */
+function resetGame(playerCount){
+  SETTINGS.players = playerCount;
+  state = newState(playerCount);
+  boardTypes = generateBoardTypes();
+  logEl.innerHTML = "";
+  renderBoard();
+  renderStats();
+  renderHeader("—");
+  rollBtnTop.disabled = false;
+  logEntry({ icon:"✅", title:"Game ready", detail:`${playerCount} player(s). Click Roll Dice to begin.` });
+}
+
+newGameBtn.addEventListener("click", ()=>{
+  const n = parseInt(playerSelect.value, 10);
+  resetGame(n);
+});
+
+playerSelect.addEventListener("change", ()=>{
+  // don’t auto-reset, just sets the value; New Game applies it
+});
+
+rollBtnTop.addEventListener("click", roll);
+
+/** ========================
+ * MODALS EVENTS
+ * ======================== */
+rulesBtnTop.addEventListener("click", openRules);
+rulesCloseX.addEventListener("click", closeRules);
+rulesCloseBtn.addEventListener("click", closeRules);
+rulesStartBtn.addEventListener("click", closeRules);
+rulesModal.addEventListener("click", (e)=>{ if(e.target===rulesModal) closeRules(); });
+
+dontShowRules.addEventListener("change", ()=>{
+  localStorage.setItem("econation_hide_rules", dontShowRules.checked ? "1" : "0");
+});
+
+turnCloseX.addEventListener("click", ()=>{
+  // prevent skipping the choice: if they close, we just re-open it (forces decision)
+  // If you want to allow closing, remove this.
+  // We'll treat it as "cancel": keep modal open
+  // so players must answer.
+});
+turnCancelBtn.addEventListener("click", ()=>{
+  // same: don't allow canceling a turn
+});
+
+/** ========================
+ * INIT
+ * ======================== */
+resetGame(2);
+
+window.addEventListener("load", ()=>{
   const hide = localStorage.getItem("econation_hide_rules") === "1";
-  if (!hide) openRules();
+  if(!hide) openRules();
 });
 </script>
 </body>
