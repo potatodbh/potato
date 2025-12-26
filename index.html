@@ -92,6 +92,78 @@
       .wrap{ grid-template-columns: 1fr; }
     }
 
+    /* Make layout feel “dashboard-y” */
+.wrap{
+  display:grid;
+  grid-template-columns: 1.45fr 0.55fr;
+  gap: 14px;
+  align-items: start;
+}
+
+/* Sidebar card */
+.card.right{
+  position: sticky;
+  top: 12px;
+  align-self: start;
+}
+
+/* Small controls row at top of sidebar */
+.rightTop{ margin-bottom: 6px; }
+
+.controlRow{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end; /* pushes them to the right */
+}
+
+.miniLabel{
+  opacity:.8;
+  font-size: 12px;
+  margin-right: -4px;
+}
+
+.select{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  color: #fff;
+  border-radius: 12px;
+  padding: 8px 10px;
+  outline: none;
+}
+
+/* Big roll button section */
+.ctaWrap{
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.10);
+  display:grid;
+  gap: 8px;
+}
+
+.btn.cta{
+  width: 100%;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 14px 14px;
+  border-radius: 16px;
+  letter-spacing: .2px;
+  box-shadow: 0 14px 34px rgba(0,0,0,.45);
+}
+
+.ctaHint{
+  font-size: 12px;
+  opacity: .82;
+  text-align: center;
+}
+
+/* Mobile: stack sidebar under board */
+@media (max-width: 1100px){
+  .wrap{ grid-template-columns: 1fr; }
+  .card.right{ position: static; }
+  .controlRow{ justify-content: flex-start; }
+}
     .card{
       background: var(--panel);
       border: 1px solid rgba(255,255,255,.08);
@@ -416,21 +488,35 @@
       <div class="sub">Race to the finish by making smart economic choices. Designed for ~20 minutes of play.</div>
     </div>
 
-    <div class="topbar-right">
-      <label class="pill">
-        Players:
-        <select id="playersSelect">
-          <option value="2" selected>2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </select>
-      </label>
+<!-- RIGHT SIDEBAR -->
+<div class="card right">
+  <div class="rightTop">
+    <div class="controlRow">
+      <label class="miniLabel">Players</label>
+      <select id="playerSelect" class="select">
+        <option>2</option><option>3</option><option>4</option>
+      </select>
 
-      <button id="newBtn" class="btn2">New Game</button>
+      <button id="newGameBtn" class="btn2">New Game</button>
       <button id="rulesBtn" class="btn2">Rules</button>
-      <button id="rollBtn" class="btn">Roll Dice</button>
     </div>
   </div>
+
+  <h2 style="margin:8px 0 10px;">Game Info</h2>
+
+  <!-- whatever you already show here -->
+  <div id="infoBox" class="infoBox">...</div>
+
+  <h3 style="margin:12px 0 8px;">Game Log</h3>
+  <div id="log" class="log"></div>
+
+  <!-- BIG CTA BUTTON -->
+  <div class="ctaWrap">
+    <button id="rollBtn" class="btn cta">🎲 Roll Dice</button>
+    <div class="ctaHint" id="ctaHint">Your turn: Player 1</div>
+  </div>
+</div>
+
 
   <div class="wrap">
     <!-- LEFT: Board + bottom player strip -->
