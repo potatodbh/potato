@@ -3,19 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>EconNation: Rise of Empires</title>
+  <title>EconNation: Rise of Empires (Multiplayer • Teaching Edition)</title>
 
   <style>
-    /* =========================
-      THEME
-    ========================== */
     :root{
       --bg:#0a0e27;
       --panel: rgba(255,255,255,.06);
-      --panel-2: rgba(255,255,255,.04);
+      --panel2: rgba(255,255,255,.04);
       --border: rgba(255,255,255,.12);
       --text:#e9eef5;
-      --muted: rgba(233,238,245,.85);
+      --muted: rgba(233,238,245,.82);
 
       --accent:#60a5fa;
       --success:#22c55e;
@@ -23,12 +20,9 @@
       --danger:#ef4444;
 
       --shadow: 0 14px 30px rgba(0,0,0,.4);
-
-      --radius-lg: 20px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-
-      --gap: 16px;
+      --r-lg: 20px;
+      --r-md: 16px;
+      --r-sm: 12px;
 
       font-family: system-ui, Arial, sans-serif;
       color: var(--text);
@@ -39,49 +33,19 @@
     body{ padding:16px; min-height:100vh; }
 
     h1{ font-size:36px; letter-spacing:.3px; margin-bottom:8px; }
-    .subtitle{ opacity:.85; font-size:15px; margin-bottom:20px; color: var(--muted); }
+    .subtitle{ opacity:.85; font-size:15px; margin-bottom:16px; color: var(--muted); }
 
-    /* =========================
-      LAYOUT
-    ========================== */
-    .game-wrapper{
-      display:grid;
-      grid-template-columns: 320px 1fr 320px;
-      gap: var(--gap);
-      align-items:start;
-    }
-    @media (max-width: 1200px){
-      .game-wrapper{ grid-template-columns: 1fr; }
-      .sidebar{ order:2; }
-    }
-
-    /* =========================
-      CARDS / TYPOGRAPHY
-    ========================== */
-    .card{
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      box-shadow: var(--shadow);
-    }
-    .card h2{ margin:0 0 12px; font-size:18px; font-weight:900; }
-    .card h3{ margin:12px 0 8px; font-size:15px; font-weight:800; }
-
-    /* =========================
-      CONTROLS + BUTTONS
-    ========================== */
     .controls{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
-      margin-bottom:16px;
+      margin-bottom:14px;
       align-items:center;
     }
 
     .btn{
       border:0;
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       padding: 10px 16px;
       cursor:pointer;
       font-weight:800;
@@ -89,7 +53,6 @@
       transition: transform .15s, box-shadow .15s, background .15s, opacity .15s;
       user-select:none;
     }
-
     .btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
 
     .btn--primary{
@@ -106,90 +69,56 @@
     }
     .btn--secondary:hover{ background: rgba(255,255,255,.12); }
 
-    .btn--success{ background: var(--success); color:#0a0e27; }
-    .btn--danger{ background: var(--danger); color:#fff; }
-
     .btn--xl{ font-size:16px; padding:14px 28px; }
 
-    select{
+    select, input{
       padding:10px;
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       background:rgba(255,255,255,.08);
       color:#fff;
       border:1px solid var(--border);
       font-weight:700;
+      outline:none;
     }
+    input::placeholder{ color: rgba(255,255,255,.55); }
 
-    /* =========================
-      STATS
-    ========================== */
-    .stats-grid{
+    .game-wrapper{
       display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap:10px;
-      margin-bottom:16px;
+      grid-template-columns: 380px 1fr 380px;
+      gap:16px;
+      align-items:start;
+    }
+    @media (max-width: 1200px){
+      .game-wrapper{ grid-template-columns: 1fr; }
+      .sidebar{ order:2; }
     }
 
-    .stat-card{
-      background: var(--panel-2);
+    .card{
+      background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px;
+      border-radius: var(--r-md);
+      padding: 16px;
+      box-shadow: var(--shadow);
     }
+    .card h2{ margin:0 0 12px; font-size:18px; font-weight:900; }
+    .card h3{ margin:12px 0 8px; font-size:15px; font-weight:800; }
 
-    .stat-label{
-      font-size:11px;
-      opacity:.7;
-      text-transform: uppercase;
-      letter-spacing:.5px;
-      margin-bottom:4px;
-    }
-
-    .stat-value{
-      font-size:24px;
-      font-weight:900;
-      display:flex;
-      align-items:baseline;
-      gap:6px;
-    }
-
-    .stat-trend{ font-size:13px; font-weight:700; }
-    .stat-trend.up{ color: var(--success); }
-    .stat-trend.down{ color: var(--danger); }
-
-    .stat-bar{
-      height:6px;
-      background: rgba(255,255,255,.1);
-      border-radius:3px;
-      overflow:hidden;
-      margin-top:8px;
-    }
-
-    .stat-bar-fill{
-      height:100%;
-      background: var(--accent);
-      transition: width .3s;
-      width:0%;
-    }
-
-    /* =========================
-      TIMELINE
-    ========================== */
     .timeline{
-      background: var(--panel-2);
+      background: var(--panel2);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       padding: 12px;
-      margin-bottom:16px;
+      margin-bottom:14px;
     }
     .timeline-header{
       display:flex;
       justify-content:space-between;
       align-items:center;
+      gap:12px;
       margin-bottom:10px;
     }
     .timeline-title{ font-weight:800; font-size:14px; }
-    .timeline-time{ font-size:20px; font-weight:900; color: var(--accent); }
+    .timeline-time{ font-size:20px; font-weight:900; color: var(--accent); white-space:nowrap; }
     .timeline-progress{
       height:8px;
       background: rgba(255,255,255,.1);
@@ -199,30 +128,97 @@
     .timeline-progress-fill{
       height:100%;
       background: linear-gradient(90deg, var(--accent), var(--success));
-      transition: width .5s linear;
+      transition: width .2s linear;
       width:0%;
     }
 
-    /* =========================
-      EVENTS
-    ========================== */
+    .mini{
+      display:flex;
+      gap:12px;
+      margin-top:10px;
+      font-size:12px;
+      opacity:.9;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .pill{
+      font-size:11px;
+      padding:3px 8px;
+      border-radius:999px;
+      background: rgba(255,255,255,.1);
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,.08);
+      white-space:nowrap;
+    }
+
+    .players{
+      display:grid;
+      gap:10px;
+    }
+    .player-card{
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 12px;
+    }
+    .player-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .player-name{
+      font-weight:900;
+      font-size:14px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:10px;
+    }
+    .stat{
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .stat-label{
+      font-size:10px;
+      opacity:.7;
+      text-transform: uppercase;
+      letter-spacing:.5px;
+      margin-bottom:4px;
+    }
+    .stat-value{
+      font-size:18px;
+      font-weight:900;
+    }
+
     .event-card{
-      background: linear-gradient(135deg, rgba(239,68,68,.15), rgba(255,255,255,.06));
-      border: 1px solid rgba(239,68,68,.3);
-      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(96,165,250,.12), rgba(255,255,255,.06));
+      border: 1px solid rgba(96,165,250,.28);
+      border-radius: var(--r-md);
       padding: 16px;
-      margin-bottom:16px;
-      animation: slideIn .3s;
+      margin-bottom:14px;
+      animation: slideIn .25s;
+    }
+    .event-card.alert{
+      background: linear-gradient(135deg, rgba(239,68,68,.15), rgba(255,255,255,.06));
+      border-color: rgba(239,68,68,.3);
     }
     @keyframes slideIn{
       from{ opacity:0; transform: translateY(-10px); }
       to{ opacity:1; transform: translateY(0); }
     }
-
     .event-badge{
       display:inline-block;
-      background: var(--danger);
-      color:#fff;
+      background: var(--accent);
+      color:#0a0e27;
       padding: 4px 10px;
       border-radius:999px;
       font-size:11px;
@@ -230,9 +226,9 @@
       letter-spacing:.5px;
       margin-bottom:8px;
     }
+    .event-badge.red{ background: var(--danger); color:#fff; }
     .event-title{ font-size:18px; font-weight:900; margin-bottom:8px; }
-    .event-text{ font-size:14px; opacity:.9; line-height:1.5; margin-bottom:12px; }
-
+    .event-text{ font-size:14px; opacity:.92; line-height:1.5; margin-bottom:12px; }
     .event-topic{
       display:inline-block;
       background: rgba(96,165,250,.2);
@@ -243,97 +239,107 @@
       font-weight:800;
       margin:0 6px 8px 0;
     }
-
-    .event-choices{ display:grid; gap:8px; }
-
-    .choice-btn{
-      text-align:left;
-      background: rgba(255,255,255,.08);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding:12px;
-      color:#fff;
-      font-weight:700;
-      cursor:pointer;
-      transition: transform .15s, background .15s;
+    .event-meta{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
     }
-    .choice-btn:hover{ background: rgba(255,255,255,.12); transform: translateX(4px); }
 
-    .choice-label{ display:block; font-size:13px; margin-bottom:4px; }
-    .choice-effect{ display:block; font-size:11px; opacity:.7; }
-
-    /* =========================
-      ADVISORS
-    ========================== */
-    .advisor-card{
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+    .choice-block{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--r-sm);
       padding: 12px;
       margin-bottom:10px;
-      display:flex;
-      gap:12px;
-      align-items:start;
     }
-    .advisor-avatar{
-      width:48px; height:48px; border-radius:50%;
-      background: linear-gradient(135deg, var(--accent), var(--success));
-      display:flex; align-items:center; justify-content:center;
-      font-size:24px; flex-shrink:0;
-    }
-    .advisor-name{ font-weight:800; font-size:13px; margin-bottom:4px; }
-    .advisor-message{ font-size:12px; opacity:.85; line-height:1.4; }
-
-    /* =========================
-      NATIONS
-    ========================== */
-    .nation-list{ display:grid; gap:10px; }
-
-    .nation-card{
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-    }
-    .nation-header{
+    .choice-title{
       display:flex;
       justify-content:space-between;
-      align-items:center;
-      margin-bottom:8px;
+      gap:10px;
+      align-items:flex-start;
+      margin-bottom:6px;
     }
-    .nation-name{ font-weight:800; font-size:14px; }
-    .nation-status{
+    .choice-label{
+      font-weight:900;
+      font-size:13px;
+      line-height:1.25;
+    }
+    .choice-effect{
       font-size:11px;
-      padding:3px 8px;
-      border-radius:999px;
-      background: rgba(255,255,255,.1);
-      text-transform: capitalize;
+      opacity:.75;
+      margin-top:2px;
     }
-    .nation-status.friendly{ background: rgba(34,197,94,.2); color: var(--success); }
-    .nation-status.neutral{ background: rgba(245,158,11,.2); color: var(--warning); }
-    .nation-status.hostile{ background: rgba(239,68,68,.2); color: var(--danger); }
-    .nation-stats{ display:flex; gap:12px; font-size:11px; opacity:.8; }
+    .choose-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .choose-btn{
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color:#fff;
+      padding:8px 10px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:11px;
+      transition: background .15s, transform .15s, opacity .15s;
+    }
+    .choose-btn:hover{ background: rgba(255,255,255,.12); transform: translateY(-1px); }
+    .choose-btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
 
-    /* =========================
-      LOG
-    ========================== */
+    .answer-row{
+      margin-top:8px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      font-size:12px;
+      opacity:.9;
+    }
+    .answer-chip{
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      padding:4px 8px;
+      font-size:11px;
+      font-weight:900;
+    }
+
     .log{
-      background: rgba(0,0,0,.3);
+      background: rgba(0,0,0,.30);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       padding: 10px;
-      max-height: 200px;
+      max-height: 220px;
       overflow-y:auto;
       font-size:12px;
       line-height:1.5;
     }
     .log-entry{ padding:6px 0; border-bottom:1px solid rgba(255,255,255,.05); }
     .log-entry:last-child{ border-bottom:none; }
-    .log-time{ color: var(--accent); font-weight:700; margin-right:6px; }
+    .log-time{ color: var(--accent); font-weight:900; margin-right:6px; }
 
-    /* =========================
-      MODALS / OVERLAYS
-    ========================== */
+    .topics-covered{
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 12px;
+      margin-top:12px;
+    }
+    .topic-badge{
+      display:inline-block;
+      background: rgba(34,197,94,.2);
+      color: var(--success);
+      padding: 4px 8px;
+      border-radius:999px;
+      font-size:10px;
+      font-weight:900;
+      margin:4px 4px 4px 0;
+    }
+
     .overlay{
       position:fixed;
       inset:0;
@@ -346,15 +352,15 @@
       padding:20px;
     }
     .overlay__content{
-      max-width:700px;
+      max-width:820px;
+      width:min(820px, 100%);
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+      border-radius: var(--r-lg);
       padding:32px;
       text-align:center;
       box-shadow: 0 20px 60px rgba(0,0,0,.6);
     }
-
     .scenario-title{
       font-size:32px;
       font-weight:900;
@@ -366,35 +372,35 @@
     }
     .scenario-description{
       font-size:16px;
-      opacity:.9;
+      opacity:.92;
       line-height:1.6;
-      margin-bottom:24px;
+      margin-bottom:18px;
+      color: var(--muted);
     }
-    .scenario-objectives{
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding:16px;
-      text-align:left;
-      margin-bottom:24px;
-    }
-    .scenario-objectives h3{ margin:0 0 12px; font-size:14px; }
-    .scenario-objectives ul{ margin-left:20px; line-height:1.8; font-size:14px; }
-
-    .game-over-title{
-      font-size:36px;
-      font-weight:900;
-      margin-bottom:16px;
-    }
-    .game-over-title.victory{ color: var(--success); }
-    .game-over-title.defeat{ color: var(--danger); }
-
-    .game-over-stats{
+    .setup-grid{
       display:grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap:12px;
-      margin:20px 0;
+      grid-template-columns: 1fr 1fr;
+      gap:16px;
+      text-align:left;
+      margin-top:16px;
     }
+    @media (max-width: 820px){
+      .setup-grid{ grid-template-columns:1fr; }
+    }
+    .setup-box{
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding:16px;
+    }
+    .setup-box h3{ margin:0 0 10px; font-size:14px; }
+    .setup-row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-bottom:10px;
+    }
+    .setup-row label{ font-size:12px; opacity:.85; min-width:120px; }
 
     .paused-overlay{
       position:fixed;
@@ -404,33 +410,12 @@
       background: rgba(96,165,250,.95);
       color:#0a0e27;
       padding:12px 24px;
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-sm);
       font-weight:900;
       font-size:18px;
       z-index:100;
       display:none;
       box-shadow: 0 8px 24px rgba(0,0,0,.4);
-    }
-
-    /* =========================
-      TOPICS
-    ========================== */
-    .topics-covered{
-      background: var(--panel-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding:12px;
-      margin-top:16px;
-    }
-    .topic-badge{
-      display:inline-block;
-      background: rgba(34,197,94,.2);
-      color: var(--success);
-      padding: 4px 8px;
-      border-radius:999px;
-      font-size:10px;
-      font-weight:800;
-      margin:4px 4px 4px 0;
     }
   </style>
 </head>
@@ -438,32 +423,98 @@
 <body>
   <div class="paused-overlay" id="pausedOverlay">⏸ GAME PAUSED</div>
 
-  <!-- Scenario Screen -->
+  <!-- Setup -->
   <div class="overlay" id="scenarioScreen">
     <div class="overlay__content">
-      <div class="scenario-title" id="scenarioTitle">The Oil Crisis</div>
-      <div class="scenario-description" id="scenarioDescription"></div>
-
-      <div class="scenario-objectives">
-        <h3>Victory Conditions (Complete in 5 minutes):</h3>
-        <ul id="objectivesList"></ul>
+      <div class="scenario-title">Scenario Setup</div>
+      <div class="scenario-description">
+        This version is built for classroom use: more question variety (identify/analyze/evaluate), 2–4 players, and automatic event pacing for a ~20 minute game.
       </div>
 
-      <button class="btn btn--primary btn--xl" id="startScenarioBtn">Begin Scenario</button>
+      <div class="setup-grid">
+        <div class="setup-box">
+          <h3>Game Options</h3>
+
+          <div class="setup-row">
+            <label>Scenario</label>
+            <select id="scenarioSelect" style="flex:1;">
+              <option value="mixed">Full Curriculum (All Units)</option>
+              <option value="unit1">Unit 1 Focus</option>
+              <option value="unit2">Unit 2 Focus</option>
+              <option value="unit3">Unit 3 Focus</option>
+              <option value="unit45">Unit 4/5 Focus</option>
+            </select>
+          </div>
+
+          <div class="setup-row">
+            <label>Players</label>
+            <select id="playerCount" style="flex:1;">
+              <option value="2">2 Players</option>
+              <option value="3">3 Players</option>
+              <option value="4" selected>4 Players</option>
+            </select>
+          </div>
+
+          <div class="setup-row">
+            <label>Game Length</label>
+            <select id="gameLength" style="flex:1;">
+              <option value="900">15 minutes</option>
+              <option value="1200" selected>20 minutes</option>
+              <option value="1500">25 minutes</option>
+            </select>
+          </div>
+
+          <div class="setup-row">
+            <label>Event Rate</label>
+            <select id="eventRate" style="flex:1;">
+              <option value="6">Every 6s (fast)</option>
+              <option value="8" selected>Every 8s (recommended)</option>
+              <option value="10">Every 10s (slow)</option>
+            </select>
+          </div>
+
+          <div class="setup-row">
+            <label>Decision Timer</label>
+            <select id="decisionTimer" style="flex:1;">
+              <option value="10">10s</option>
+              <option value="12" selected>12s (recommended)</option>
+              <option value="15">15s</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setup-box">
+          <h3>Player Names</h3>
+          <div id="playerNameInputs"></div>
+
+          <div class="topics-covered" style="margin-top:10px;">
+            <h3 style="margin:0 0 8px;">How to Play (simple)</h3>
+            <div style="font-size:12px; opacity:.9; line-height:1.5;">
+              Events appear automatically. For each choice, players click their own button under the option they want.
+              When all players choose (or the timer ends), results apply to each nation.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn--primary btn--xl" id="startScenarioBtn" style="margin-top:16px;">Start Game</button>
     </div>
   </div>
 
-  <!-- Game Over Screen -->
+  <!-- Game Over -->
   <div class="overlay" id="gameOverScreen">
-    <div class="overlay__content" style="max-width:600px;">
-      <div class="game-over-title" id="gameOverTitle">Victory!</div>
-      <div id="gameOverMessage" style="font-size:16px; margin-bottom:20px; opacity:.9;"></div>
-
-      <div class="game-over-stats" id="gameOverStats"></div>
+    <div class="overlay__content">
+      <div class="scenario-title" id="gameOverTitle">Game Over</div>
+      <div id="gameOverMessage" class="scenario-description" style="margin-bottom:10px;"></div>
 
       <div class="topics-covered">
-        <h3 style="margin-bottom:8px;">Economic Topics Covered:</h3>
+        <h3 style="margin:0 0 8px;">Economic Topics Covered</h3>
         <div id="topicsCoveredList"></div>
+      </div>
+
+      <div class="topics-covered" style="margin-top:12px;">
+        <h3 style="margin:0 0 8px;">Final Rankings</h3>
+        <div id="finalResults"></div>
       </div>
 
       <button class="btn btn--primary btn--xl" id="restartBtn" style="margin-top:12px;">Play Again</button>
@@ -471,81 +522,35 @@
   </div>
 
   <h1>EconNation: Rise of Empires</h1>
-  <div class="subtitle">Real-time economic strategy • Educational board game covering CIE3M curriculum</div>
+  <div class="subtitle">Teaching Edition • Multiplayer 2–4 • Auto events • 20 minute classroom game</div>
 
   <div class="controls">
     <button class="btn btn--primary" id="pauseBtn">⏸ Pause</button>
     <button class="btn btn--secondary" id="newGameBtn">🔄 New Game</button>
-
-    <select id="scenarioSelect">
-      <option value="oil">Oil Crisis (Units 2-3)</option>
-      <option value="startup">Tech Startup (Units 1-3)</option>
-      <option value="debt">Debt Crisis (Units 3-5)</option>
-    </select>
   </div>
 
   <div class="game-wrapper">
     <aside class="card sidebar">
-      <h2>Your Nation</h2>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">GDP Growth</div>
-          <div class="stat-value">
-            <span id="gdpValue">10.0</span>
-            <span class="stat-trend" id="gdpTrend"></span>
-          </div>
-          <div class="stat-bar"><div class="stat-bar-fill" id="gdpBar"></div></div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-label">Unemployment</div>
-          <div class="stat-value">
-            <span id="unempValue">8%</span>
-            <span class="stat-trend" id="unempTrend"></span>
-          </div>
-          <div class="stat-bar"><div class="stat-bar-fill" id="unempBar" style="background:var(--warning)"></div></div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-label">Inflation</div>
-          <div class="stat-value">
-            <span id="inflationValue">3%</span>
-            <span class="stat-trend" id="inflationTrend"></span>
-          </div>
-          <div class="stat-bar"><div class="stat-bar-fill" id="inflationBar"></div></div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-label">Treasury</div>
-          <div class="stat-value">
-            <span id="cashValue">$1000</span>
-            <span class="stat-trend" id="cashTrend"></span>
-          </div>
-          <div class="stat-bar"><div class="stat-bar-fill" id="cashBar" style="background:var(--success)"></div></div>
-        </div>
-      </div>
-
-      <div class="stat-card" style="margin-bottom:16px;">
-        <div class="stat-label">Approval Rating</div>
-        <div class="stat-value">
-          <span id="approvalValue">55%</span>
-          <span class="stat-trend" id="approvalTrend"></span>
-        </div>
-        <div class="stat-bar"><div class="stat-bar-fill" id="approvalBar" style="background:var(--warning)"></div></div>
-      </div>
-
-      <h3>Advisors</h3>
-      <div id="advisorContainer"></div>
+      <h2>Players</h2>
+      <div class="players" id="playersPanel"></div>
     </aside>
 
     <main class="card">
       <div class="timeline">
         <div class="timeline-header">
-          <div class="timeline-title">Scenario Progress</div>
-          <div class="timeline-time" id="timeDisplay">5:00</div>
+          <div class="timeline-title">Scenario Time • Next Event • Decision Timer</div>
+          <div class="timeline-time" id="timeDisplay">20:00</div>
         </div>
-        <div class="timeline-progress"><div class="timeline-progress-fill" id="timeProgress"></div></div>
+        <div class="timeline-progress">
+          <div class="timeline-progress-fill" id="timeProgress"></div>
+        </div>
+
+        <div class="mini">
+          <span class="pill">Next event in: <strong><span id="nextEventIn">--</span>s</strong></span>
+          <span class="pill">Decision ends in: <strong><span id="decisionIn">--</span>s</strong></span>
+          <span class="pill">Waiting for: <strong><span id="waitingFor">--</span></strong></span>
+          <span class="pill">Mode: <strong><span id="modeLabel">--</span></strong></span>
+        </div>
       </div>
 
       <div id="eventContainer"></div>
@@ -555,962 +560,1013 @@
     </main>
 
     <aside class="card sidebar">
-      <h2>World Nations</h2>
-      <div class="nation-list" id="nationList"></div>
+      <h2>Topics Covered</h2>
+      <div id="topicsLive"></div>
 
-      <h3 style="margin-top:20px;">Quick Actions</h3>
-      <div style="display:grid; gap:8px;">
-        <button class="btn btn--secondary" id="tradeBtn">📊 Propose Trade</button>
-        <button class="btn btn--secondary" id="investBtn">💰 Public Investment</button>
-        <button class="btn btn--secondary" id="taxBtn">📈 Adjust Taxes</button>
-        <button class="btn btn--secondary" id="rateBtn">🏦 Change Interest Rate</button>
-      </div>
-
-      <div class="topics-covered" id="topicsPanel">
-        <h3>Topics Covered</h3>
-        <div id="topicsLive"></div>
+      <div class="topics-covered">
+        <h3 style="margin:0 0 8px;">Teacher-Friendly Learning Types</h3>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="pill">Identify</span>
+          <span class="pill">Analyze</span>
+          <span class="pill">Evaluate</span>
+          <span class="pill">Trade-offs</span>
+        </div>
       </div>
     </aside>
   </div>
 
 <script>
-/* ========================================
-   COMPREHENSIVE EVENT LIBRARY - ALL ISU TOPICS
-======================================== */
+/* =========================================================
+   TEACHING EVENT BANK (bigger variety)
+   - Each event: unit, topics, skill, type
+   - type:
+      "quiz"    => correct/incorrect style
+      "policy"  => decision trade-off (no single "right" winner)
+      "mixed"   => has best answer but still trade-offs
+========================================================= */
 
 const ALL_EVENTS = {
-  // UNIT 1: Introduction to Economics
-  unit1_scarcity: {
-    unit: 1,
-    topics: ["What is Economics", "Economic Resources"],
-    title: "Resource Scarcity",
-    text: "Economics is the study of how societies allocate scarce resources. Your nation faces limited land, labor, and capital. A new factory requires resources that could also build schools.",
+  // ---------------- UNIT 1 ----------------
+  u1_what_is_econ: {
+    unit: 1, skill: "Identify", type: "quiz",
+    topics: ["What is Economics", "Scarcity"],
+    title: "What is Economics?",
+    text: "A drought reduces farmland and food output. Your nation must decide how to allocate remaining resources.",
     choices: [
-      {
-        label: "Build factory (prioritize capital goods)",
-        effect: "Allocates resources to production",
-        stats: { gdp: 2, cash: -200, approval: -3 },
-        explanation: "This demonstrates opportunity cost - choosing production over education."
-      },
-      {
-        label: "Build schools (prioritize human capital)",
-        effect: "Invests in education and labor quality",
-        stats: { approval: 5, cash: -200, unemp: -1 },
-        explanation: "Develops human capital, a key economic resource."
-      }
+      { label: "Economics is how societies allocate scarce resources", effect: "Correct definition", correct: true,  stats: { approval: +2 } , explanation: "Economics studies choices under scarcity." },
+      { label: "Economics is only about money and banking",              effect: "Incorrect definition", correct: false, stats: { approval: -2 }, explanation: "Banking is part of economics, but not the full definition." }
     ]
   },
 
-  unit1_ppf: {
-    unit: 1,
-    topics: ["PPF", "Decision Making Model"],
-    title: "Production Possibilities",
-    text: "Your PPF shows the trade-off between consumer goods and military spending. You're currently at a point inside the curve (inefficient). How do you reach the frontier?",
+  u1_branches_micro_macro: {
+    unit: 1, skill: "Identify", type: "quiz",
+    topics: ["Two Branches of Economics", "Micro vs Macro"],
+    title: "Micro or Macro?",
+    text: "A local pizza shop raises prices due to higher cheese costs. Which branch studies this?",
     choices: [
-      {
-        label: "Increase efficiency (move to PPF)",
-        effect: "Better resource utilization",
-        stats: { gdp: 2, approval: 4 },
-        explanation: "Moving from inside to on the PPF eliminates waste."
-      },
-      {
-        label: "Accept current production",
-        effect: "Remain inefficient",
-        stats: { approval: -5 },
-        explanation: "Staying inside the PPF means underutilized resources."
-      }
+      { label: "Microeconomics", effect: "Correct", correct: true, stats: { gdp: +0.2, approval: +1 }, explanation: "Micro focuses on individual markets/firms." },
+      { label: "Macroeconomics", effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Macro focuses on national totals (GDP, inflation, unemployment)." }
     ]
   },
 
-  unit1_systems: {
-    unit: 1,
+  u1_resources_human_capital: {
+    unit: 1, skill: "Analyze", type: "quiz",
+    topics: ["Economic Resources", "Human Capital"],
+    title: "Economic Resources",
+    text: "The government funds worker training programs to improve productivity.",
+    choices: [
+      { label: "Human Capital", effect: "Correct", correct: true, stats: { unemp: -0.5, gdp: +0.4 }, explanation: "Training increases skills → productivity." },
+      { label: "Land",          effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Land is natural resources, not skills/education." }
+    ]
+  },
+
+  u1_decision_opportunity_cost: {
+    unit: 1, skill: "Evaluate", type: "quiz",
+    topics: ["Decision Making Model", "Opportunity Cost"],
+    title: "Opportunity Cost",
+    text: "You can build a new highway OR new schools with the same budget. You choose schools.",
+    choices: [
+      { label: "The opportunity cost is the highway you didn’t build", effect: "Correct", correct: true, stats: { approval: +2 }, explanation: "Opportunity cost = next best alternative." },
+      { label: "The opportunity cost is the money you spent",         effect: "Incorrect", correct: false, stats: { approval: -2 }, explanation: "Money is the cost, but opportunity cost is what you gave up." }
+    ]
+  },
+
+  u1_ppf_inside_curve: {
+    unit: 1, skill: "Analyze", type: "quiz",
+    topics: ["PPF", "Efficiency"],
+    title: "Inside the PPF",
+    text: "Factories are idle and many workers are unemployed. Your production is inside the PPF curve.",
+    choices: [
+      { label: "Resources are underutilized (inefficient)", effect: "Correct", correct: true, stats: { gdp: +0.5, approval: +1 }, explanation: "Inside PPF means waste/unused resources." },
+      { label: "The economy is already at max output",       effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Max output is ON the curve." }
+    ]
+  },
+
+  u1_systems_command_vs_market: {
+    unit: 1, skill: "Identify", type: "quiz",
     topics: ["Economic Systems", "Political Economic Systems"],
-    title: "Economic System Choice",
-    text: "You must decide: will markets or government planning primarily allocate resources? This defines your economic system.",
+    title: "Economic Systems",
+    text: "Government sets wages, prices, and production targets for all industries.",
     choices: [
-      {
-        label: "Market economy (capitalism)",
-        effect: "Private ownership, market forces",
-        stats: { gdp: 2, approval: -2, inflation: 1 },
-        explanation: "Market forces determine production and prices."
-      },
-      {
-        label: "Command economy (socialism)",
-        effect: "Government control, central planning",
-        stats: { gdp: -1, approval: 5, unemp: -2 },
-        explanation: "Government plans production and distribution."
-      }
+      { label: "Command economy", effect: "Correct", correct: true, stats: { approval: +1 }, explanation: "Central planning is command." },
+      { label: "Market economy",  effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Markets set prices in market economies." }
     ]
   },
 
-  // UNIT 2: Economic Fundamentals
-  unit2_supply_demand: {
-    unit: 2,
+  // ---------------- UNIT 2 ----------------
+  u2_goals_full_employment: {
+    unit: 2, skill: "Analyze", type: "quiz",
+    topics: ["Economic Goals", "Full Employment"],
+    title: "Economic Goals",
+    text: "Inflation is low but unemployment is rising quickly.",
+    choices: [
+      { label: "The goal of full employment is not being met", effect: "Correct", correct: true, stats: { approval: +1 }, explanation: "Rising unemployment means less full employment." },
+      { label: "The goal of price stability is not being met",  effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Low inflation suggests price stability is okay." }
+    ]
+  },
+
+  u2_supply_demand_price_rise: {
+    unit: 2, skill: "Analyze", type: "quiz",
     topics: ["Supply & Demand", "Equilibrium"],
-    title: "Market Equilibrium",
-    text: "Housing demand surges while supply remains fixed. The market is out of equilibrium. Prices are rising rapidly (shortage conditions).",
+    title: "Demand Shock",
+    text: "A new trend makes everyone want sneakers. Demand increases sharply.",
     choices: [
-      {
-        label: "Let market reach new equilibrium",
-        effect: "Prices rise to balance supply and demand",
-        stats: { inflation: 3, approval: -8, gdp: 1 },
-        explanation: "Market forces will find equilibrium at a higher price."
-      },
-      {
-        label: "Increase supply (build housing)",
-        effect: "Shift supply curve right",
-        stats: { cash: -300, approval: 6, inflation: -1 },
-        explanation: "Increasing supply lowers equilibrium price."
-      }
+      { label: "Equilibrium price rises (short run)", effect: "Correct", correct: true, stats: { inflation: +0.4, gdp: +0.3 }, explanation: "Higher demand pushes price up." },
+      { label: "Equilibrium price falls",             effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Price generally increases when demand rises." }
     ]
   },
 
-  unit2_price_controls: {
-    unit: 2,
+  u2_price_ceiling_shortage: {
+    unit: 2, skill: "Analyze", type: "quiz",
     topics: ["Price Controls", "Price Ceiling"],
-    title: "Rent Control Decision",
-    text: "Citizens demand rent controls (price ceiling below equilibrium). This will create a shortage but improve affordability short-term.",
+    title: "Rent Control",
+    text: "Rent control is set below equilibrium (a price ceiling).",
     choices: [
-      {
-        label: "Implement rent control",
-        effect: "Price ceiling creates shortage",
-        stats: { approval: 8, unemp: 1, gdp: -1 },
-        explanation: "Price ceilings below equilibrium cause shortages."
-      },
-      {
-        label: "Reject controls",
-        effect: "Market determines price",
-        stats: { approval: -10, inflation: 2 },
-        explanation: "Allows equilibrium price to prevail."
-      }
+      { label: "A shortage is likely", effect: "Correct", correct: true, stats: { approval: +1, unemp: +0.2 }, explanation: "Ceilings below equilibrium cause shortages." },
+      { label: "A surplus is likely",  effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Surplus is more common with price floors above equilibrium." }
     ]
   },
 
-  unit2_minimum_wage: {
-    unit: 2,
-    topics: ["Minimum Wage", "Labour Unions"],
-    title: "Wage Floor Policy",
-    text: "Labour unions demand a $15 minimum wage (price floor above equilibrium). This helps workers but may reduce employment.",
+  u2_minimum_wage_floor: {
+    unit: 2, skill: "Analyze", type: "quiz",
+    topics: ["Minimum Wage", "Price Floor"],
+    title: "Minimum Wage",
+    text: "Minimum wage increases above the equilibrium wage.",
     choices: [
-      {
-        label: "Raise minimum wage",
-        effect: "Price floor above equilibrium",
-        stats: { approval: 10, unemp: 2, inflation: 2 },
-        explanation: "Price floors above equilibrium cause surpluses (unemployment)."
-      },
-      {
-        label: "Keep current wage",
-        effect: "Maintain equilibrium",
-        stats: { approval: -12, unemp: -1 },
-        explanation: "Equilibrium wage avoids surplus labor."
-      }
+      { label: "Unemployment may increase (surplus labor)", effect: "Correct", correct: true, stats: { unemp: +0.5, approval: +0.5 }, explanation: "Price floors above equilibrium can reduce hiring." },
+      { label: "Unemployment must decrease",               effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Higher wages can reduce quantity of labor demanded." }
     ]
   },
 
-  unit2_ethical: {
-    unit: 2,
+  u2_unemployment_types_cyclical: {
+    unit: 2, skill: "Identify", type: "quiz",
+    topics: ["Unemployment", "Business Cycle"],
+    title: "Unemployment Type",
+    text: "Workers lose jobs during a recession as demand falls.",
+    choices: [
+      { label: "Cyclical unemployment", effect: "Correct", correct: true, stats: { approval: +1 }, explanation: "Cyclical is caused by downturns." },
+      { label: "Frictional unemployment", effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Frictional is short-term job searching." }
+    ]
+  },
+
+  u2_workers_rights_union: {
+    unit: 2, skill: "Evaluate", type: "policy",
+    topics: ["Labour Unions/Workers Rights", "Economic Goals"],
+    title: "Union Negotiations",
+    text: "Unions threaten to strike unless safety rules and benefits improve.",
+    choices: [
+      { label: "Increase workplace protections & benefits", effect: "+Approval, possible higher costs", stats: { approval: +4, cash: -120, unemp: +0.2 }, explanation: "Improves worker welfare; may raise business costs." },
+      { label: "Reject demands to protect business costs",  effect: "+Cash now, risk unrest",          stats: { cash: +80, approval: -5, gdp: -0.2 }, explanation: "Lower costs, but social conflict hurts stability." }
+    ]
+  },
+
+  u2_ethical_consumerism: {
+    unit: 2, skill: "Evaluate", type: "policy",
     topics: ["Ethical Consumerism", "Economic Goals"],
-    title: "Sustainability vs Growth",
-    text: "Economic goal trade-off: fast growth now (environmental cost) or sustainable practices (slower growth)? Citizens care about both.",
+    title: "Ethical Consumerism",
+    text: "A cheap supplier is exposed for unsafe working conditions.",
     choices: [
-      {
-        label: "Prioritize growth",
-        effect: "Maximize GDP, externalities later",
-        stats: { gdp: 3, approval: -5, cash: 100 },
-        explanation: "Prioritizes efficiency over equity and sustainability."
-      },
-      {
-        label: "Sustainable development",
-        effect: "Ethical choice with trade-offs",
-        stats: { gdp: 1, approval: 8, cash: -100 },
-        explanation: "Balances multiple economic goals: growth, equity, sustainability."
-      }
+      { label: "Switch to ethical supplier", effect: "Costs rise, reputation improves", stats: { cash: -120, approval: +4, gdp: -0.1 }, explanation: "Ethical choices can trade off with short-term cost." },
+      { label: "Keep the cheap supplier",    effect: "Costs stay low, reputation worsens", stats: { cash: +60, approval: -5 }, explanation: "Lower prices, but public trust falls." }
     ]
   },
 
-  unit2_unemployment: {
-    unit: 2,
-    topics: ["Unemployment", "Workers Rights"],
-    title: "Job Creation Program",
-    text: "Unemployment is rising (cyclical unemployment from recession). Workers' rights groups demand action. Will you intervene?",
+  // ---------------- UNIT 3 ----------------
+  u3_macro_vs_micro: {
+    unit: 3, skill: "Identify", type: "quiz",
+    topics: ["Macroeconomics", "GDP"],
+    title: "Macro Question",
+    text: "Which is a macroeconomic question?",
     choices: [
-      {
-        label: "Government job programs",
-        effect: "Direct intervention in labor market",
-        stats: { cash: -300, unemp: -3, approval: 10 },
-        explanation: "Active labor market policy reduces unemployment."
-      },
-      {
-        label: "Wait for recovery",
-        effect: "Let market self-correct",
-        stats: { approval: -8, unemp: 1 },
-        explanation: "Relies on natural economic recovery."
-      }
+      { label: "What is the national unemployment rate?", effect: "Correct", correct: true, stats: { approval: +1 }, explanation: "National totals are macro." },
+      { label: "Why did one café raise prices?",          effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "A single firm is micro." }
     ]
   },
 
-  // UNIT 3: Macroeconomics
-  unit3_gdp: {
-    unit: 3,
-    topics: ["GDP", "Macroeconomics"],
-    title: "GDP Calculation",
-    text: "Your nation's GDP is growing but quality of life isn't improving. GDP doesn't measure unpaid work, environmental health, or inequality. Redefine success?",
+  u3_gdp_limits_unpaid_work: {
+    unit: 3, skill: "Analyze", type: "quiz",
+    topics: ["GDP", "Measures of Economic Growth"],
+    title: "GDP Limitation",
+    text: "Stay-at-home parents do full-time work at home. Why isn’t it counted in GDP?",
     choices: [
-      {
-        label: "Focus purely on GDP",
-        effect: "Traditional macroeconomic measure",
-        stats: { gdp: 2, approval: -3 },
-        explanation: "GDP = C + I + G + (X-M), measures total production."
-      },
-      {
-        label: "Use broader measures (GPI)",
-        effect: "Alternative macroeconomic indicators",
-        stats: { gdp: 1, approval: 6, cash: -100 },
-        explanation: "Recognizes GDP limitations in measuring welfare."
-      }
+      { label: "It’s unpaid work (not sold in markets)", effect: "Correct", correct: true, stats: { approval: +1 }, explanation: "GDP tracks market transactions." },
+      { label: "It has no value",                        effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "It has value, but GDP doesn’t measure it well." }
     ]
   },
 
-  unit3_cpi: {
-    unit: 3,
-    topics: ["CPI", "Measures of Economic Growth"],
-    title: "Inflation Measurement",
-    text: "CPI shows 8% inflation (basket of goods cost rising). Citizens' purchasing power is falling. This affects real GDP vs nominal GDP.",
+  u3_cpi_purchasing_power: {
+    unit: 3, skill: "Analyze", type: "quiz",
+    topics: ["CPI", "Inflation"],
+    title: "CPI and Purchasing Power",
+    text: "CPI rises by 6% this year.",
     choices: [
-      {
-        label: "Combat inflation (tight policy)",
-        effect: "Reduce aggregate demand",
-        stats: { inflation: -3, gdp: -1, approval: 5 },
-        explanation: "CPI measures price changes; controlling it preserves purchasing power."
-      },
-      {
-        label: "Tolerate inflation",
-        effect: "Accept higher prices",
-        stats: { inflation: 2, approval: -8 },
-        explanation: "High CPI erodes real incomes."
-      }
+      { label: "Purchasing power decreases", effect: "Correct", correct: true, stats: { approval: +1 }, explanation: "Higher prices reduce what money can buy." },
+      { label: "Purchasing power increases", effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Inflation typically reduces purchasing power." }
     ]
   },
 
-  unit3_fiscal: {
-    unit: 3,
-    topics: ["Fiscal Policy", "Role of Government"],
-    title: "Fiscal Stimulus",
-    text: "Recession hits. Fiscal policy options: increase government spending (G) or cut taxes. Both create deficits but may boost aggregate demand.",
+  u3_business_cycle_peak: {
+    unit: 3, skill: "Identify", type: "quiz",
+    topics: ["Business Cycle", "Inflation"],
+    title: "Business Cycle Phase",
+    text: "GDP is high, unemployment is low, and inflation is rising quickly.",
     choices: [
-      {
-        label: "Increase spending (expansionary)",
-        effect: "Boost aggregate demand via G",
-        stats: { cash: -400, gdp: 3, unemp: -2, approval: 8 },
-        explanation: "Expansionary fiscal policy: ↑G → ↑AD → ↑GDP."
-      },
-      {
-        label: "Cut spending (austerity)",
-        effect: "Contractionary fiscal policy",
-        stats: { cash: 200, gdp: -2, unemp: 2, approval: -10 },
-        explanation: "Contractionary fiscal policy during recession worsens downturn."
-      }
+      { label: "Peak",        effect: "Correct", correct: true, stats: { approval: +1 }, explanation: "Peaks often have overheating/inflation." },
+      { label: "Recession",   effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Recessions usually have rising unemployment." }
     ]
   },
 
-  unit3_monetary: {
-    unit: 3,
-    topics: ["Monetary Policy", "Business Cycle"],
-    title: "Interest Rate Decision",
-    text: "The business cycle is at a peak. Inflation rising. Monetary policy: raise interest rates (contractionary) or keep low (risk overheating)?",
+  u3_role_of_government: {
+    unit: 3, skill: "Evaluate", type: "policy",
+    topics: ["Role of the Government in the Economy", "Economic Goals"],
+    title: "Role of Government",
+    text: "A monopoly raises prices. Citizens want the government to act.",
     choices: [
-      {
-        label: "Raise rates (contractionary)",
-        effect: "Cool economy, reduce inflation",
-        stats: { inflation: -2, gdp: -1, approval: 3 },
-        explanation: "Contractionary monetary policy: ↑interest rates → ↓borrowing → ↓AD."
-      },
-      {
-        label: "Keep rates low",
-        effect: "Risk inflation for growth",
-        stats: { gdp: 2, inflation: 3, approval: -5 },
-        explanation: "Accommodative policy during expansion risks overheating."
-      }
+      { label: "Regulate/Break up monopoly", effect: "More competition, stability", stats: { inflation: -0.3, approval: +3, gdp: +0.1 }, explanation: "Government can promote competition." },
+      { label: "Do nothing (market solution)", effect: "Less intervention, public anger", stats: { approval: -3, inflation: +0.2 }, explanation: "Lack of action can hurt fairness and trust." }
     ]
   },
 
-  unit3_entrepreneur: {
-    unit: 3,
-    topics: ["Entrepreneurship", "Lorenz Curve"],
-    title: "Innovation vs Inequality",
-    text: "Tech entrepreneurs create GDP growth but worsen inequality (Lorenz curve bowing out). Support innovation or redistribute?",
+  u3_fiscal_policy_recession: {
+    unit: 3, skill: "Evaluate", type: "mixed",
+    topics: ["Fiscal Policy", "Government Spending"],
+    title: "Fiscal Policy",
+    text: "A recession hits. What policy is MOST likely to boost aggregate demand?",
     choices: [
-      {
-        label: "Support entrepreneurs",
-        effect: "Growth but higher inequality",
-        stats: { gdp: 3, approval: -4, cash: 150 },
-        explanation: "Entrepreneurship drives growth but can increase inequality (Lorenz curve)."
-      },
-      {
-        label: "Redistribute wealth",
-        effect: "Reduce inequality (flatten Lorenz)",
-        stats: { gdp: -1, approval: 8, cash: -200 },
-        explanation: "Progressive policies flatten Lorenz curve (more equality)."
-      }
+      { label: "Increase government spending", effect: "Correct in recession", correct: true, stats: { cash: -220, gdp: +0.8, unemp: -0.4, approval:+2 }, explanation: "Expansionary fiscal policy boosts AD." },
+      { label: "Cut government spending",      effect: "Often contractionary", correct: false, stats: { cash: +120, gdp: -0.4, unemp: +0.3, approval:-2 }, explanation: "Cuts can reduce AD during a downturn." }
     ]
   },
 
-  // UNIT 4/5: Financial Planning
-  unit45_budgeting: {
-    unit: 4,
+  u3_monetary_policy_inflation: {
+    unit: 3, skill: "Analyze", type: "mixed",
+    topics: ["Monetary Policy", "Inflation"],
+    title: "Monetary Policy",
+    text: "Inflation is rising rapidly. What is a common central bank response?",
+    choices: [
+      { label: "Raise interest rates", effect: "Correct anti-inflation move", correct: true, stats: { inflation: -0.6, gdp: -0.2, approval: +1 }, explanation: "Higher rates reduce borrowing/spending." },
+      { label: "Lower interest rates", effect: "Usually increases inflation pressure", correct: false, stats: { inflation: +0.4, approval: -1 }, explanation: "Lower rates can stimulate demand." }
+    ]
+  },
+
+  u3_lorenz_curve_inequality: {
+    unit: 3, skill: "Analyze", type: "quiz",
+    topics: ["Lorenz Curve", "Equity"],
+    title: "Lorenz Curve",
+    text: "The Lorenz curve bows farther away from the line of equality.",
+    choices: [
+      { label: "Inequality is increasing", effect: "Correct", correct: true, stats: { approval: +1 }, explanation: "More bowing = more unequal distribution." },
+      { label: "Inequality is decreasing", effect: "Incorrect", correct: false, stats: { approval: -1 }, explanation: "Less bowing = more equality." }
+    ]
+  },
+
+  u3_entrepreneurship_tradeoff: {
+    unit: 3, skill: "Evaluate", type: "policy",
+    topics: ["Entrepreneurship", "Economic Growth"],
+    title: "Startup Boom",
+    text: "Startups are booming. GDP rises, but housing prices climb and inequality grows.",
+    choices: [
+      { label: "Support startups (tax credits)", effect: "Growth now, inequality risk", stats: { gdp:+0.7, cash:-120, approval:-1, inflation:+0.2 }, explanation: "Entrepreneurship drives growth; distribution may worsen." },
+      { label: "Redirect funds to social programs", effect: "Equity now, slower growth", stats: { gdp:-0.2, cash:-80, approval:+3 }, explanation: "Equity supports stability, may reduce growth speed." }
+    ]
+  },
+
+  // ---------------- UNIT 4/5 ----------------
+  u45_budget_deficit: {
+    unit: 4, skill: "Identify", type: "quiz",
     topics: ["Budgeting", "Financial Planning"],
-    title: "Budget Discipline",
-    text: "Your treasury is running deficits. Budget fundamentals: revenue must cover expenses or you borrow. Time to balance the budget?",
+    title: "Budgeting",
+    text: "Government spending is higher than government revenue this year.",
     choices: [
-      {
-        label: "Balance budget now",
-        effect: "Fiscal discipline",
-        stats: { cash: -200, approval: -6, gdp: -1 },
-        explanation: "Budgeting principle: expenses ≤ revenue avoids debt."
-      },
-      {
-        label: "Run deficit temporarily",
-        effect: "Borrow for investment",
-        stats: { cash: 300, gdp: 2, approval: 5 },
-        explanation: "Deficit financing can be strategic if invested wisely."
-      }
+      { label: "That creates a budget deficit", effect: "Correct", correct: true, stats: { approval:+1 }, explanation: "Deficit = spending > revenue." },
+      { label: "That creates a budget surplus", effect: "Incorrect", correct: false, stats: { approval:-1 }, explanation: "Surplus = revenue > spending." }
     ]
   },
 
-  unit45_investing: {
-    unit: 4,
+  u45_investing_risk: {
+    unit: 4, skill: "Analyze", type: "quiz",
     topics: ["Investing & Saving", "Stocks"],
-    title: "Investment Strategy",
-    text: "Extra revenue: save in bonds (safe, low return) or invest in stock market (higher risk/return)? Time horizon and risk tolerance matter.",
+    title: "Risk vs Return",
+    text: "Which option is generally higher risk (but higher potential return)?",
     choices: [
-      {
-        label: "Conservative (bonds/savings)",
-        effect: "Low risk, low return",
-        stats: { cash: 100, approval: 3 },
-        explanation: "Saving is low-risk; stocks offer higher returns but volatility."
-      },
-      {
-        label: "Aggressive (stocks)",
-        effect: "Higher risk, potential gains",
-        stats: { cash: -100, gdp: 1 },
-        explanation: "Stock market investing: diversification reduces risk."
-      }
+      { label: "Stocks", effect: "Correct", correct: true, stats: { gdp:+0.2, approval:+1 }, explanation: "Stocks usually carry more volatility." },
+      { label: "Savings account", effect: "Incorrect", correct: false, stats: { approval:-1 }, explanation: "Savings accounts are generally low risk." }
     ]
   },
 
-  unit45_large_purchase: {
-    unit: 4,
-    topics: ["Large Purchases", "Buying a Car & House"],
-    title: "Infrastructure Purchase",
-    text: "Buying a major asset (like buying a house): pay cash vs finance? Interest rates, down payment, and opportunity cost matter.",
+  u45_large_purchase_mortgage: {
+    unit: 4, skill: "Evaluate", type: "policy",
+    topics: ["Large Purchases", "Interest Rates"],
+    title: "Buying Infrastructure",
+    text: "You need a major bridge. Pay cash now or finance it over time?",
     choices: [
-      {
-        label: "Finance purchase (borrow)",
-        effect: "Pay interest over time",
-        stats: { cash: -100, gdp: 2, approval: 5 },
-        explanation: "Financing: preserves liquidity but costs interest (like mortgages)."
-      },
-      {
-        label: "Save up and pay cash",
-        effect: "No interest, but delays benefits",
-        stats: { cash: -400, approval: -3 },
-        explanation: "Cash purchase: no interest but high opportunity cost."
-      }
+      { label: "Finance (borrow)", effect: "Keep cash, pay interest later", stats: { cash:-80, gdp:+0.4, approval:+2, inflation:+0.1 }, explanation: "Borrowing preserves liquidity but costs interest." },
+      { label: "Pay cash",         effect: "No interest, big treasury hit", stats: { cash:-240, gdp:+0.2, approval:+1 }, explanation: "Cash avoids interest but reduces flexibility." }
     ]
   },
 
-  unit45_trade: {
-    unit: 4,
+  u45_trade_agreement: {
+    unit: 5, skill: "Analyze", type: "mixed",
     topics: ["International Business", "Trade Agreements"],
-    title: "Free Trade Agreement",
-    text: "A trade agreement offers reduced tariffs. Free trade increases efficiency but may hurt domestic industries. Sign it?",
+    title: "Trade Agreement",
+    text: "A free trade deal removes tariffs. Who tends to benefit most in the long run?",
     choices: [
-      {
-        label: "Sign agreement (free trade)",
-        effect: "Gains from trade",
-        stats: { gdp: 2, approval: -4, unemp: 1 },
-        explanation: "Free trade: specialization and comparative advantage increase total output."
-      },
-      {
-        label: "Protect domestic industry",
-        effect: "Tariffs/protectionism",
-        stats: { gdp: -1, approval: 6, unemp: -1 },
-        explanation: "Protectionism: helps domestic producers, hurts consumers."
-      }
+      { label: "Consumers (lower prices, more choice)", effect: "Often true", correct: true, stats: { gdp:+0.3, approval:+1 }, explanation: "Trade can lower prices and expand options." },
+      { label: "Only domestic producers", effect: "Usually not", correct: false, stats: { approval:-1 }, explanation: "Some producers lose to competition; others win." }
     ]
   },
 
-  unit45_comparative: {
-    unit: 4,
+  u45_comparative_advantage: {
+    unit: 5, skill: "Analyze", type: "quiz",
     topics: ["Comparative Advantage", "Absolute Advantage"],
-    title: "Specialization Decision",
-    text: "You can produce both tech and agriculture, but Northland is better at tech (absolute advantage). Should you specialize per comparative advantage?",
+    title: "Comparative Advantage",
+    text: "Country A gives up less to produce wheat than Country B. Who should specialize in wheat?",
     choices: [
-      {
-        label: "Specialize (comparative advantage)",
-        effect: "Focus on agriculture, trade for tech",
-        stats: { gdp: 3, approval: 5, cash: 200 },
-        explanation: "Comparative advantage: specialize where opportunity cost is lowest, trade for rest."
-      },
-      {
-        label: "Self-sufficiency",
-        effect: "Produce both (inefficient)",
-        stats: { gdp: -1, approval: 3 },
-        explanation: "Ignoring comparative advantage reduces total gains from trade."
-      }
+      { label: "Country A (comparative advantage)", effect: "Correct", correct: true, stats: { gdp:+0.4, cash:+60 }, explanation: "Comparative advantage is about lower opportunity cost." },
+      { label: "Country B (no advantage)",          effect: "Incorrect", correct: false, stats: { approval:-1 }, explanation: "Specialize where opportunity cost is lowest." }
     ]
   },
 
-  unit45_currency: {
-    unit: 4,
+  u45_currency_depreciation: {
+    unit: 5, skill: "Analyze", type: "quiz",
     topics: ["Currency", "Exchange Rates"],
-    title: "Currency Devaluation",
-    text: "Your currency is weakening vs trading partners. This makes exports cheaper (good) but imports expensive (bad). Intervene?",
+    title: "Currency Changes",
+    text: "Your currency depreciates (loses value). What happens to exports?",
     choices: [
-      {
-        label: "Let currency float",
-        effect: "Market-determined exchange rate",
-        stats: { gdp: 2, inflation: 2, cash: 150 },
-        explanation: "Weak currency boosts exports; floating rates reflect market forces."
-      },
-      {
-        label: "Defend currency",
-        effect: "Spend reserves to prop up value",
-        stats: { cash: -300, inflation: -1, approval: 4 },
-        explanation: "Currency intervention: costly, affects trade balance."
-      }
+      { label: "Exports become cheaper to foreigners", effect: "Correct", correct: true, stats: { gdp:+0.3, inflation:+0.2 }, explanation: "Cheaper exports can increase demand." },
+      { label: "Exports become more expensive",        effect: "Incorrect", correct: false, stats: { approval:-1 }, explanation: "Depreciation usually makes exports cheaper." }
+    ]
+  },
+
+  /* =========================================================
+     EXTRA EVENTS (to ensure depth + replayability)
+     - These add more variety without making your UI messy.
+  ========================================================= */
+
+  // Unit 1 extras
+  u1_tradeoff_guns_butter: {
+    unit: 1, skill:"Analyze", type:"policy",
+    topics: ["PPF", "Decision Making Model"],
+    title: "Guns vs Butter",
+    text: "Your government can increase military spending OR consumer goods production this year, but not both.",
+    choices: [
+      { label:"Increase consumer goods", effect:"Higher living standards now", stats:{ gdp:+0.4, approval:+3, cash:-80 }, explanation:"More consumer goods can increase satisfaction." },
+      { label:"Increase military spending", effect:"Security now, less consumer output", stats:{ gdp:+0.2, approval:-1, cash:-60 }, explanation:"Trade-off: resources used for defense." }
+    ]
+  },
+
+  // Unit 2 extras
+  u2_supply_shock_gas: {
+    unit:2, skill:"Analyze", type:"mixed",
+    topics:["Supply & Demand", "Inflation"],
+    title:"Supply Shock (Gasoline)",
+    text:"A war disrupts oil supply. What happens to equilibrium price and quantity for gas?",
+    choices:[
+      { label:"Price up, quantity down", effect:"Correct", correct:true, stats:{ inflation:+0.5, gdp:-0.1 }, explanation:"Supply left → price up, quantity down." },
+      { label:"Price down, quantity up", effect:"Incorrect", correct:false, stats:{ approval:-1 }, explanation:"That’s the opposite of a negative supply shock." }
+    ]
+  },
+
+  u2_price_floor_surplus: {
+    unit:2, skill:"Identify", type:"quiz",
+    topics:["Price Controls", "Minimum Wage"],
+    title:"Price Floor",
+    text:"A price floor is set above equilibrium for milk.",
+    choices:[
+      { label:"Surplus is likely", effect:"Correct", correct:true, stats:{ cash:-40, approval:+1 }, explanation:"Price floors above equilibrium create surpluses." },
+      { label:"Shortage is likely", effect:"Incorrect", correct:false, stats:{ approval:-1 }, explanation:"Shortages occur when price is BELOW equilibrium." }
+    ]
+  },
+
+  // Unit 3 extras
+  u3_real_vs_nominal: {
+    unit:3, skill:"Analyze", type:"mixed",
+    topics:["Measures of Economic Growth", "CPI"],
+    title:"Real vs Nominal GDP",
+    text:"GDP increased 5%, but inflation was 4%. What’s a good conclusion?",
+    choices:[
+      { label:"Real growth is small (about 1%)", effect:"Correct", correct:true, stats:{ approval:+1 }, explanation:"Inflation-adjusted growth is much lower." },
+      { label:"People are definitely 5% better off", effect:"Incorrect", correct:false, stats:{ approval:-1 }, explanation:"Nominal growth can be inflated by higher prices." }
+    ]
+  },
+
+  u3_automatic_stabilizers: {
+    unit:3, skill:"Evaluate", type:"policy",
+    topics:["Fiscal Policy", "Role of the Government in the Economy"],
+    title:"Automatic Stabilizers",
+    text:"During recession, unemployment benefits increase automatically. What is the likely effect?",
+    choices:[
+      { label:"Supports consumer spending, helps stabilize economy", effect:"Stabilizing", stats:{ gdp:+0.2, cash:-60, approval:+2 }, explanation:"Transfers can reduce the severity of recessions." },
+      { label:"Immediately causes inflation to disappear", effect:"Unrealistic", stats:{ approval:-1 }, explanation:"Stabilizers help demand; they don’t magically fix inflation." }
+    ]
+  },
+
+  // Unit 4/5 extras
+  u45_diversification: {
+    unit:4, skill:"Analyze", type:"quiz",
+    topics:["Investing & Saving", "Stocks"],
+    title:"Diversification",
+    text:"Why do investors diversify (hold many different assets)?",
+    choices:[
+      { label:"To reduce risk by not relying on one asset", effect:"Correct", correct:true, stats:{ approval:+1, cash:+20 }, explanation:"Diversification lowers unsystematic risk." },
+      { label:"To guarantee profits always", effect:"Incorrect", correct:false, stats:{ approval:-1 }, explanation:"Diversification reduces risk, not guarantee gains." }
+    ]
+  },
+
+  u45_tariffs: {
+    unit:5, skill:"Evaluate", type:"policy",
+    topics:["International Business", "Trade Agreements"],
+    title:"Tariffs Debate",
+    text:"Local factories are closing due to foreign competition. Some want tariffs to protect jobs.",
+    choices:[
+      { label:"Add tariffs (protect producers)", effect:"Jobs protected, prices rise", stats:{ unemp:-0.3, approval:+2, inflation:+0.3, gdp:-0.1 }, explanation:"Tariffs can protect jobs but raise prices." },
+      { label:"Keep free trade (protect consumers)", effect:"Lower prices, job losses continue", stats:{ approval:-1, inflation:-0.1, unemp:+0.2, gdp:+0.1 }, explanation:"Trade lowers prices but some industries lose." }
     ]
   }
 };
 
-/* ========================================
-   SCENARIO DEFINITIONS
-======================================== */
-
-const SCENARIOS = {
-  oil: {
-    title: "The Oil Crisis (1973)",
-    description: "OPEC has announced an oil embargo. Energy prices are skyrocketing. Navigate supply shocks, inflation, and unemployment while covering Units 2-3 concepts.",
-    objectives: ["Maintain GDP above 8", "Keep unemployment below 12%", "Achieve approval rating above 60%"],
-    duration: 300,
-    startingStats: { gdp: 10, unemp: 8, inflation: 3, cash: 1000, approval: 55 },
-    eventTimeline: [
-      { time: 20, eventKey: 'unit2_supply_demand' },
-      { time: 50, eventKey: 'unit2_price_controls' },
-      { time: 90, eventKey: 'unit3_cpi' },
-      { time: 130, eventKey: 'unit2_unemployment' },
-      { time: 170, eventKey: 'unit3_fiscal' },
-      { time: 210, eventKey: 'unit3_monetary' },
-      { time: 250, eventKey: 'unit2_minimum_wage' }
-    ]
-  },
-
-  startup: {
-    title: "Tech Startup Nation",
-    description: "You're building a new economy from scratch. Make foundational decisions about economic systems, resources, and growth. Covers Units 1-3.",
-    objectives: ["Achieve GDP above 12", "Keep unemployment below 8%", "Maintain approval above 60%"],
-    duration: 300,
-    startingStats: { gdp: 8, unemp: 10, inflation: 2, cash: 800, approval: 50 },
-    eventTimeline: [
-      { time: 15, eventKey: 'unit1_scarcity' },
-      { time: 45, eventKey: 'unit1_systems' },
-      { time: 75, eventKey: 'unit1_ppf' },
-      { time: 110, eventKey: 'unit2_supply_demand' },
-      { time: 150, eventKey: 'unit3_entrepreneur' },
-      { time: 190, eventKey: 'unit3_gdp' },
-      { time: 230, eventKey: 'unit2_ethical' },
-      { time: 270, eventKey: 'unit3_fiscal' }
-    ]
-  },
-
-  debt: {
-    title: "Debt Crisis Recovery",
-    description: "Your nation has high debt levels. Creditors are nervous. Make tough fiscal decisions and rebuild through trade and investment. Covers Units 3-5.",
-    objectives: ["Reduce cash debt below 500", "Maintain GDP above 7", "Achieve approval above 55%"],
-    duration: 300,
-    startingStats: { gdp: 7, unemp: 12, inflation: 1, cash: 400, approval: 45 },
-    eventTimeline: [
-      { time: 25, eventKey: 'unit45_budgeting' },
-      { time: 60, eventKey: 'unit3_fiscal' },
-      { time: 100, eventKey: 'unit45_large_purchase' },
-      { time: 140, eventKey: 'unit45_trade' },
-      { time: 180, eventKey: 'unit45_comparative' },
-      { time: 220, eventKey: 'unit45_investing' },
-      { time: 260, eventKey: 'unit45_currency' }
-    ]
-  }
+// Build pools by unit (so you can meet “2 topics per unit” easily)
+const POOLS = {
+  unit1: Object.keys(ALL_EVENTS).filter(k => ALL_EVENTS[k].unit === 1),
+  unit2: Object.keys(ALL_EVENTS).filter(k => ALL_EVENTS[k].unit === 2),
+  unit3: Object.keys(ALL_EVENTS).filter(k => ALL_EVENTS[k].unit === 3),
+  unit45: Object.keys(ALL_EVENTS).filter(k => [4,5].includes(ALL_EVENTS[k].unit)),
+  mixed: Object.keys(ALL_EVENTS) // all of them
 };
 
-/* ========================================
+/* =========================================================
    GAME STATE
-======================================== */
+========================================================= */
 
 let gameState = {
   paused: false,
-  scenario: null,
-  scenarioKey: 'oil',
-  timeRemaining: 300,
+  scenarioKey: 'mixed',
+  pool: [],
+
+  duration: 1200,
+  timeRemaining: 1200,
   timeElapsed: 0,
 
-  gdp: 10,
-  unemp: 8,
-  inflation: 3,
-  cash: 1000,
-  approval: 55,
+  playerCount: 4,
+  players: [],              // [{id,name,stats:{...}}]
 
-  prevStats: null,
+  activeEventKey: null,
+  activeEvent: null,
+  choicesByPlayer: {},      // {playerId: choiceIndex}
 
-  currentEvent: null,
-  eventTimeline: [],
-  nextEventIndex: 0,
+  eventEvery: 8,            // seconds
+  decisionSeconds: 12,      // seconds
+  nextEventIn: 8,
+  decisionIn: null,
 
   topicsCovered: new Set(),
-
-  nations: [
-    { name: "Northland", status: "neutral", gdp: 12, relationship: 0 },
-    { name: "Eastmere", status: "friendly", gdp: 9, relationship: 15 },
-    { name: "Southvale", status: "hostile", gdp: 14, relationship: -20 }
-  ],
-
-  gameOver: false,
-  victory: false
+  skillsCovered: new Set(),
+  gameOver: false
 };
 
-let updateInterval = null;
-let secondInterval = null;
+let tickInterval = null;
 
-/* ========================================
+/* =========================================================
    DOM
-======================================== */
-
+========================================================= */
 const $ = (id) => document.getElementById(id);
-
-const pauseBtn = $('pauseBtn');
-const newGameBtn = $('newGameBtn');
-const scenarioSelect = $('scenarioSelect');
 
 const scenarioScreen = $('scenarioScreen');
 const startScenarioBtn = $('startScenarioBtn');
-const scenarioTitle = $('scenarioTitle');
-const scenarioDescription = $('scenarioDescription');
-const objectivesList = $('objectivesList');
+const restartBtn = $('restartBtn');
+const newGameBtn = $('newGameBtn');
+const pauseBtn = $('pauseBtn');
+
+const scenarioSelect = $('scenarioSelect');
+const playerCountSelect = $('playerCount');
+const gameLengthSelect = $('gameLength');
+const eventRateSelect = $('eventRate');
+const decisionTimerSelect = $('decisionTimer');
+const playerNameInputs = $('playerNameInputs');
+
+const pausedOverlay = $('pausedOverlay');
+const modeLabel = $('modeLabel');
 
 const gameOverScreen = $('gameOverScreen');
 const gameOverTitle = $('gameOverTitle');
 const gameOverMessage = $('gameOverMessage');
-const gameOverStats = $('gameOverStats');
 const topicsCoveredList = $('topicsCoveredList');
-const restartBtn = $('restartBtn');
+const finalResults = $('finalResults');
 
-const pausedOverlay = $('pausedOverlay');
 const timeDisplay = $('timeDisplay');
 const timeProgress = $('timeProgress');
+const nextEventInEl = $('nextEventIn');
+const decisionInEl = $('decisionIn');
+const waitingForEl = $('waitingFor');
 
 const eventContainer = $('eventContainer');
 const activityLog = $('activityLog');
-const advisorContainer = $('advisorContainer');
-const nationList = $('nationList');
+const playersPanel = $('playersPanel');
 const topicsLive = $('topicsLive');
 
-const tradeBtn = $('tradeBtn');
-const investBtn = $('investBtn');
-const taxBtn = $('taxBtn');
-const rateBtn = $('rateBtn');
-
-/* ========================================
-   UTILS
-======================================== */
-
-function formatTime(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}:${secs.toString().padStart(2, '0')}`;
+/* =========================================================
+   HELPERS
+========================================================= */
+function formatTime(seconds){
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${s.toString().padStart(2,'0')}`;
 }
-
-function clamp(val, min, max) {
-  return Math.min(max, Math.max(min, val));
-}
-
-function pct(val, min, max) {
+function clamp(val, min, max){ return Math.min(max, Math.max(min, val)); }
+function pct(val, min, max){
   if (max === min) return 0;
   return clamp(((val - min) / (max - min)) * 100, 0, 100);
 }
+function randomFrom(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
-function log(message, time = null) {
+function log(message){
   const entry = document.createElement('div');
   entry.className = 'log-entry';
-  const timestamp = time !== null ? formatTime(time) : formatTime(gameState.timeElapsed);
-  entry.innerHTML = `<span class="log-time">${timestamp}</span>${message}`;
+  entry.innerHTML = `<span class="log-time">${formatTime(gameState.timeElapsed)}</span>${message}`;
   activityLog.insertBefore(entry, activityLog.firstChild);
-
-  if (activityLog.children.length > 20) activityLog.removeChild(activityLog.lastChild);
+  if (activityLog.children.length > 26) activityLog.removeChild(activityLog.lastChild);
 }
 
-function applyStats(changes) {
-  for (const [key, value] of Object.entries(changes)) {
-    if (key in gameState) gameState[key] += value;
+function applyStatsToPlayer(player, changes){
+  const s = player.stats;
+  for (const [k,v] of Object.entries(changes)){
+    s[k] = (s[k] ?? 0) + v;
+  }
+  s.gdp = clamp(s.gdp, 0, 30);
+  s.unemp = clamp(s.unemp, 0, 25);
+  s.inflation = clamp(s.inflation, -5, 20);
+  s.approval = clamp(s.approval, 0, 100);
+}
+
+function playerScore(p){
+  const s = p.stats;
+  const gdp = s.gdp * 10;
+  const approval = s.approval * 1.2;
+  const unempPenalty = s.unemp * 8;
+  const inflPenalty = Math.max(0, s.inflation) * 6;
+  const cashBonus = clamp(s.cash, -500, 4000) / 12;
+  return gdp + approval - unempPenalty - inflPenalty + cashBonus;
+}
+
+function allPlayersChosen(){
+  return gameState.players.every(p => gameState.choicesByPlayer[p.id] !== undefined);
+}
+
+function autoPickMissing(){
+  if (!gameState.activeEvent) return;
+  const event = gameState.activeEvent;
+
+  gameState.players.forEach(p => {
+    if (gameState.choicesByPlayer[p.id] === undefined){
+      const autoChoice = Math.random() < 0.5 ? 0 : 1;
+      gameState.choicesByPlayer[p.id] = autoChoice;
+      log(`<strong>${p.name}</strong> auto-picked: ${event.choices[autoChoice].label}`);
+    }
+  });
+}
+
+/* =========================================================
+   UI RENDER
+========================================================= */
+function renderPlayers(){
+  playersPanel.innerHTML = gameState.players.map(p => {
+    const s = p.stats;
+    const status =
+      s.approval >= 65 ? 'High Approval' :
+      s.approval >= 50 ? 'Stable' : 'Unrest';
+
+    return `
+      <div class="player-card">
+        <div class="player-head">
+          <div class="player-name">👑 ${p.name}</div>
+          <span class="pill">${status}</span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat"><div class="stat-label">GDP</div><div class="stat-value">${s.gdp.toFixed(1)}</div></div>
+          <div class="stat"><div class="stat-label">Unemp</div><div class="stat-value">${s.unemp.toFixed(1)}%</div></div>
+          <div class="stat"><div class="stat-label">Inflation</div><div class="stat-value">${s.inflation.toFixed(1)}%</div></div>
+          <div class="stat"><div class="stat-label">Treasury</div><div class="stat-value">$${s.cash}</div></div>
+          <div class="stat"><div class="stat-label">Approval</div><div class="stat-value">${s.approval.toFixed(0)}%</div></div>
+          <div class="stat"><div class="stat-label">Score</div><div class="stat-value">${playerScore(p).toFixed(0)}</div></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderTopics(){
+  const topics = Array.from(gameState.topicsCovered);
+  const skills = Array.from(gameState.skillsCovered);
+
+  topicsLive.innerHTML = `
+    ${topics.length
+      ? topics.map(t => `<span class="topic-badge">${t}</span>`).join('')
+      : '<span style="opacity:.65; font-size:12px;">Topics will appear as events happen</span>'}
+    <div style="margin-top:10px; font-size:12px; opacity:.9;">
+      <strong>Skills covered:</strong> ${skills.length ? skills.join(', ') : '—'}
+    </div>
+  `;
+}
+
+function renderTimers(){
+  timeDisplay.textContent = formatTime(gameState.timeRemaining);
+  timeProgress.style.width = `${pct(gameState.timeElapsed, 0, gameState.duration)}%`;
+
+  nextEventInEl.textContent = gameState.activeEvent ? '--' : String(gameState.nextEventIn);
+  decisionInEl.textContent = gameState.activeEvent ? String(gameState.decisionIn) : '--';
+
+  if (!gameState.activeEvent){
+    waitingForEl.textContent = '--';
+  } else {
+    const waiting = gameState.players
+      .filter(p => gameState.choicesByPlayer[p.id] === undefined)
+      .map(p => p.name);
+    waitingForEl.textContent = waiting.length ? waiting.join(', ') : 'Nobody';
+  }
+}
+
+function renderEvent(){
+  if (!gameState.activeEvent){
+    eventContainer.innerHTML = `
+      <div class="event-card">
+        <span class="event-badge">WAITING</span>
+        <div class="event-title">Next event soon…</div>
+        <div class="event-text">
+          Events happen automatically. Each player selects a choice by clicking their button under the option they want.
+        </div>
+      </div>
+    `;
+    return;
   }
 
-  gameState.gdp = clamp(gameState.gdp, 0, 30);
-  gameState.unemp = clamp(gameState.unemp, 0, 25);
-  gameState.inflation = clamp(gameState.inflation, -5, 20);
-  gameState.approval = clamp(gameState.approval, 0, 100);
+  const event = gameState.activeEvent;
+  const isAlert = event.type === "policy";
 
-  updateDisplay();
-}
+  // build per-choice player buttons
+  const choicesHTML = event.choices.map((c, idx) => {
+    const chosenNames = gameState.players
+      .filter(p => gameState.choicesByPlayer[p.id] === idx)
+      .map(p => p.name);
 
-/* ========================================
-   DISPLAY
-======================================== */
+    const chosenChip = chosenNames.length
+      ? chosenNames.map(n => `<span class="answer-chip">${n}</span>`).join('')
+      : `<span style="opacity:.7;">No one picked this yet</span>`;
 
-function trendArrow(current, prev) {
-  if (prev === null || prev === undefined) return '';
-  const diff = current - prev;
-  if (Math.abs(diff) < 0.1) return '';
-  return diff > 0 ? '↑' : '↓';
-}
+    const chooseButtons = gameState.players.map(p => {
+      const already = gameState.choicesByPlayer[p.id] !== undefined;
+      return `
+        <button class="choose-btn"
+          data-player="${p.id}"
+          data-choice="${idx}"
+          ${already ? 'disabled' : ''}>
+          ${p.name}
+        </button>
+      `;
+    }).join('');
 
-function setTrend(el, arrow, isGoodWhenUp = true) {
-  el.textContent = arrow;
-  const good = (arrow === '↑' && isGoodWhenUp) || (arrow === '↓' && !isGoodWhenUp);
-  const bad = (arrow === '↓' && isGoodWhenUp) || (arrow === '↑' && !isGoodWhenUp);
-  el.className = `stat-trend ${good ? 'up' : bad ? 'down' : ''}`;
-}
+    return `
+      <div class="choice-block">
+        <div class="choice-title">
+          <div>
+            <div class="choice-label">${c.label}</div>
+            <div class="choice-effect">${c.effect}${(event.type === "quiz" || event.type === "mixed") ? " • (Quiz)" : " • (Decision)"}</div>
+          </div>
+        </div>
 
-function updateDisplay() {
-  const prev = gameState.prevStats || {};
+        <div class="answer-row">
+          <strong>Picked by:</strong> ${chosenChip}
+        </div>
 
-  $('gdpValue').textContent = gameState.gdp.toFixed(1);
-  $('unempValue').textContent = `${gameState.unemp.toFixed(1)}%`;
-  $('inflationValue').textContent = `${gameState.inflation.toFixed(1)}%`;
-  $('cashValue').textContent = `$${gameState.cash}`;
-  $('approvalValue').textContent = `${gameState.approval.toFixed(0)}%`;
-
-  const gdpArrow = trendArrow(gameState.gdp, prev.gdp);
-  const unempArrow = trendArrow(gameState.unemp, prev.unemp);
-  const inflationArrow = trendArrow(gameState.inflation, prev.inflation);
-  const cashArrow = trendArrow(gameState.cash, prev.cash);
-  const approvalArrow = trendArrow(gameState.approval, prev.approval);
-
-  setTrend($('gdpTrend'), gdpArrow, true);
-  setTrend($('unempTrend'), unempArrow, false);       // lower unemployment is good
-  setTrend($('inflationTrend'), inflationArrow, false); // lower inflation is good
-  setTrend($('cashTrend'), cashArrow, true);
-  setTrend($('approvalTrend'), approvalArrow, true);
-
-  $('gdpBar').style.width = `${pct(gameState.gdp, 0, 30)}%`;
-  $('unempBar').style.width = `${pct(gameState.unemp, 0, 25)}%`;
-
-  // inflation can be negative; map -5..20
-  $('inflationBar').style.width = `${pct(gameState.inflation, -5, 20)}%`;
-
-  // treasury might go negative; map 0..2000
-  $('cashBar').style.width = `${pct(gameState.cash, 0, 2000)}%`;
-
-  $('approvalBar').style.width = `${pct(gameState.approval, 0, 100)}%`;
-
-  gameState.prevStats = {
-    gdp: gameState.gdp,
-    unemp: gameState.unemp,
-    inflation: gameState.inflation,
-    cash: gameState.cash,
-    approval: gameState.approval
-  };
-
-  updateAdvisors();
-  updateNations();
-  updateTopics();
-}
-
-function updateAdvisors() {
-  const advisors = [];
-
-  if (gameState.gdp < 7) advisors.push({ emoji: '📉', name: 'Finance Minister', message: 'GDP is dangerously low. Consider expansionary policies.' });
-  else if (gameState.gdp > 15) advisors.push({ emoji: '📈', name: 'Finance Minister', message: 'Strong GDP growth! Economy is performing well.' });
-
-  if (gameState.unemp > 10) advisors.push({ emoji: '👷', name: 'Labor Secretary', message: 'High unemployment. Job creation programs may help.' });
-  if (gameState.inflation > 5) advisors.push({ emoji: '🏦', name: 'Central Banker', message: 'Inflation is concerning. Consider tighter monetary policy.' });
-  if (gameState.cash < 300) advisors.push({ emoji: '💰', name: 'Treasurer', message: 'Treasury reserves are low. Budget carefully.' });
-  if (gameState.approval < 50) advisors.push({ emoji: '🗳️', name: 'Political Advisor', message: 'Approval rating is poor. Consider popular policies.' });
-
-  advisorContainer.innerHTML = advisors.map(a => `
-    <div class="advisor-card">
-      <div class="advisor-avatar">${a.emoji}</div>
-      <div>
-        <div class="advisor-name">${a.name}</div>
-        <div class="advisor-message">${a.message}</div>
+        <div class="choose-row">${chooseButtons}</div>
       </div>
-    </div>
-  `).join('');
-}
+    `;
+  }).join('');
 
-function updateNations() {
-  nationList.innerHTML = gameState.nations.map(n => `
-    <div class="nation-card">
-      <div class="nation-header">
-        <div class="nation-name">${n.name}</div>
-        <div class="nation-status ${n.status}">${n.status}</div>
-      </div>
-      <div class="nation-stats">
-        <span>GDP: ${n.gdp}</span>
-        <span>Relations: ${n.relationship > 0 ? '+' : ''}${n.relationship}</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-function updateTopics() {
-  const topics = Array.from(gameState.topicsCovered);
-  topicsLive.innerHTML = topics.length
-    ? topics.map(t => `<span class="topic-badge">${t}</span>`).join('')
-    : '<span style="opacity:.6; font-size:12px;">Events will reveal topics</span>';
-}
-
-/* ========================================
-   EVENTS (no inline onclick)
-======================================== */
-
-function showEvent(eventKey) {
-  const event = ALL_EVENTS[eventKey];
-  if (!event || gameState.currentEvent) return;
-
-  gameState.currentEvent = event;
-  event.topics.forEach(t => gameState.topicsCovered.add(t));
-
+  // show event meta
   eventContainer.innerHTML = `
-    <div class="event-card">
-      <span class="event-badge">DECISION REQUIRED</span>
+    <div class="event-card ${isAlert ? 'alert' : ''}">
+      <span class="event-badge ${isAlert ? 'red' : ''}">${event.type === "policy" ? "DECISION" : "QUESTION"}</span>
+
+      <div class="event-meta">
+        <span class="pill">Unit ${event.unit}</span>
+        <span class="pill">Skill: <strong>${event.skill}</strong></span>
+        <span class="pill">Type: <strong>${event.type}</strong></span>
+      </div>
+
       ${event.topics.map(t => `<span class="event-topic">${t}</span>`).join('')}
       <div class="event-title">${event.title}</div>
       <div class="event-text">${event.text}</div>
-      <div class="event-choices">
-        ${event.choices.map((choice, idx) => `
-          <button class="choice-btn" data-choice="${idx}">
-            <span class="choice-label">${choice.label}</span>
-            <span class="choice-effect">${choice.effect}</span>
-          </button>
-        `).join('')}
+
+      ${choicesHTML}
+
+      <div style="font-size:12px; opacity:.85;">
+        Tip: If time runs out, missing players will auto-pick to keep the game moving.
       </div>
     </div>
   `;
 
-  // Attach listeners safely
-  eventContainer.querySelectorAll('[data-choice]').forEach(btn => {
-    btn.addEventListener('click', () => makeChoice(Number(btn.dataset.choice)));
+  // wire click handlers
+  eventContainer.querySelectorAll('.choose-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const playerId = btn.dataset.player;
+      const choiceIndex = Number(btn.dataset.choice);
+
+      // lock in player choice
+      if (gameState.choicesByPlayer[playerId] !== undefined) return;
+      gameState.choicesByPlayer[playerId] = choiceIndex;
+
+      const player = gameState.players.find(p => p.id === playerId);
+      log(`<strong>${player.name}</strong> chose: ${event.choices[choiceIndex].label}`);
+
+      updateUI();
+
+      // resolve early if everyone chose
+      if (allPlayersChosen()) resolveEvent();
+    });
+  });
+}
+
+function updateUI(){
+  renderPlayers();
+  renderTopics();
+  renderTimers();
+  renderEvent();
+}
+
+/* =========================================================
+   EVENT FLOW
+========================================================= */
+function startNewEvent(){
+  if (gameState.activeEvent || gameState.gameOver) return;
+
+  const eventKey = randomFrom(gameState.pool);
+  const event = ALL_EVENTS[eventKey];
+
+  gameState.activeEventKey = eventKey;
+  gameState.activeEvent = event;
+  gameState.choicesByPlayer = {};
+  gameState.decisionIn = gameState.decisionSeconds;
+
+  // tracking for teacher-friendly proof
+  event.topics.forEach(t => gameState.topicsCovered.add(t));
+  gameState.skillsCovered.add(event.skill);
+
+  log(`<strong>Event started:</strong> ${event.title}`);
+  updateUI();
+}
+
+function resolveEvent(){
+  if (!gameState.activeEvent) return;
+
+  const event = gameState.activeEvent;
+
+  // ensure all have a choice
+  autoPickMissing();
+
+  // apply effects per player
+  gameState.players.forEach(p => {
+    const idx = gameState.choicesByPlayer[p.id];
+    const choice = event.choices[idx];
+
+    // quiz/mixed grading: reward correct more clearly
+    if ((event.type === "quiz" || event.type === "mixed") && typeof choice.correct === "boolean") {
+      if (choice.correct) {
+        applyStatsToPlayer(p, choice.stats || {});
+        // small bonus for correct answers (classroom motivation)
+        applyStatsToPlayer(p, { cash: +25, approval: +1 });
+        log(`<em>${p.name}</em> got it right ✅ (+$25 bonus)`);
+      } else {
+        applyStatsToPlayer(p, choice.stats || {});
+        // small penalty for wrong answers
+        applyStatsToPlayer(p, { cash: -15, approval: -1 });
+        log(`<em>${p.name}</em> missed it ❌ (-$15 penalty)`);
+      }
+    } else {
+      // policy: just apply stats
+      applyStatsToPlayer(p, choice.stats || {});
+    }
   });
 
-  log(`<strong>Event:</strong> ${event.title}`);
-  togglePause(true);
+  log(`<strong>Resolved:</strong> ${event.title}`);
+
+  // clear event
+  gameState.activeEventKey = null;
+  gameState.activeEvent = null;
+  gameState.choicesByPlayer = {};
+  gameState.decisionIn = null;
+
+  // reset next event timer
+  gameState.nextEventIn = gameState.eventEvery;
+
+  updateUI();
 }
 
-function makeChoice(choiceIndex) {
-  if (!gameState.currentEvent) return;
-
-  const choice = gameState.currentEvent.choices[choiceIndex];
-  applyStats(choice.stats);
-  log(`<strong>Choice:</strong> ${choice.label} - ${choice.explanation}`);
-
-  eventContainer.innerHTML = '';
-  gameState.currentEvent = null;
-
-  togglePause(false);
-}
-
-function checkForEvents() {
-  if (gameState.paused || gameState.gameOver || gameState.currentEvent) return;
-
-  const next = gameState.eventTimeline[gameState.nextEventIndex];
-  if (next && gameState.timeElapsed >= next.time) {
-    showEvent(next.eventKey);
-    gameState.nextEventIndex++;
-  }
-}
-
-/* ========================================
-   GAME LOOP
-======================================== */
-
-function gameLoop() {
-  if (gameState.paused || gameState.gameOver) return;
-
-  gameState.gdp += (Math.random() - 0.48) * 0.15;
-  gameState.unemp += (Math.random() - 0.5) * 0.08;
-  gameState.inflation += (Math.random() - 0.5) * 0.1;
-  gameState.cash += Math.floor((gameState.gdp * 5) - 25);
-
-  const economicHealth =
-    (gameState.gdp / 15) * 0.5 +
-    ((15 - gameState.unemp) / 15) * 0.3 +
-    ((10 - gameState.inflation) / 10) * 0.2;
-
-  gameState.approval += (economicHealth - 0.5) * 2;
-
-  updateDisplay();
-  checkForEvents();
-}
-
-function secondTick() {
+/* =========================================================
+   GAME LOOP (1-second heartbeat)
+   - drift is kept SMALL so events remain the main driver
+========================================================= */
+function heartbeat(){
   if (gameState.paused || gameState.gameOver) return;
 
   gameState.timeElapsed++;
   gameState.timeRemaining--;
 
-  timeDisplay.textContent = formatTime(gameState.timeRemaining);
-  timeProgress.style.width = `${pct(gameState.timeElapsed, 0, gameState.scenario.duration)}%`;
+  // gentle drift
+  gameState.players.forEach(p => {
+    const s = p.stats;
 
-  if (gameState.timeRemaining <= 0) endGame();
+    // very small drift so learning decisions matter most
+    s.gdp += (Math.random() - 0.5) * 0.05;
+    s.unemp += (Math.random() - 0.5) * 0.03;
+    s.inflation += (Math.random() - 0.5) * 0.04;
+    s.cash += Math.floor((s.gdp * 2) - 8);
+
+    // approval reacts lightly to conditions
+    const economicHealth =
+      (s.gdp / 15) * 0.5 +
+      ((15 - s.unemp) / 15) * 0.3 +
+      ((10 - s.inflation) / 10) * 0.2;
+
+    s.approval += (economicHealth - 0.5) * 0.8;
+
+    // clamp
+    s.gdp = clamp(s.gdp, 0, 30);
+    s.unemp = clamp(s.unemp, 0, 25);
+    s.inflation = clamp(s.inflation, -5, 20);
+    s.approval = clamp(s.approval, 0, 100);
+  });
+
+  // event pacing
+  if (!gameState.activeEvent){
+    gameState.nextEventIn--;
+    if (gameState.nextEventIn <= 0){
+      startNewEvent();
+    }
+  } else {
+    gameState.decisionIn--;
+    if (gameState.decisionIn <= 0){
+      resolveEvent();
+    }
+  }
+
+  // end
+  if (gameState.timeRemaining <= 0){
+    endGame();
+  }
+
+  updateUI();
 }
 
-/* ========================================
-   CONTROL
-======================================== */
+/* =========================================================
+   START / END
+========================================================= */
+function clearTimers(){
+  if (tickInterval) clearInterval(tickInterval);
+  tickInterval = null;
+}
 
-function togglePause(forcePause = null) {
-  gameState.paused = forcePause !== null ? forcePause : !gameState.paused;
+function initPlayers(count, names){
+  // balanced classroom-friendly baseline
+  const baseline = { gdp: 10, unemp: 8, inflation: 3, cash: 1000, approval: 55 };
 
+  gameState.players = [];
+  for (let i = 0; i < count; i++){
+    gameState.players.push({
+      id: `p${i+1}`,
+      name: names[i] || `Player ${i+1}`,
+      stats: { ...baseline }
+    });
+  }
+}
+
+function startGame(){
+  gameState.scenarioKey = scenarioSelect.value;
+  gameState.pool = POOLS[gameState.scenarioKey] || POOLS.mixed;
+
+  gameState.playerCount = Number(playerCountSelect.value);
+  gameState.duration = Number(gameLengthSelect.value);
+  gameState.timeRemaining = gameState.duration;
+  gameState.timeElapsed = 0;
+
+  gameState.eventEvery = Number(eventRateSelect.value);
+  gameState.decisionSeconds = Number(decisionTimerSelect.value);
+  gameState.nextEventIn = gameState.eventEvery;
+  gameState.decisionIn = null;
+
+  gameState.activeEvent = null;
+  gameState.activeEventKey = null;
+  gameState.choicesByPlayer = {};
+  gameState.topicsCovered = new Set();
+  gameState.skillsCovered = new Set();
+  gameState.gameOver = false;
+  gameState.paused = false;
+
+  const names = [];
+  for (let i=0; i<gameState.playerCount; i++){
+    const input = document.querySelector(`[data-player-name="${i+1}"]`);
+    names.push(input?.value?.trim() || `Player ${i+1}`);
+  }
+  initPlayers(gameState.playerCount, names);
+
+  modeLabel.textContent =
+    gameState.scenarioKey === "mixed" ? "Full Curriculum" :
+    gameState.scenarioKey.toUpperCase();
+
+  activityLog.innerHTML = '';
+  log(`<strong>Game started:</strong> ${modeLabel.textContent}`);
+  log(`Players: ${gameState.players.map(p=>p.name).join(', ')}`);
+  log(`Event Rate: every ${gameState.eventEvery}s • Decision Timer: ${gameState.decisionSeconds}s • Length: ${Math.round(gameState.duration/60)} min`);
+
+  scenarioScreen.style.display = 'none';
+  gameOverScreen.style.display = 'none';
+
+  clearTimers();
+  tickInterval = setInterval(heartbeat, 1000);
+
+  updateUI();
+}
+
+function endGame(){
+  gameState.gameOver = true;
+  clearTimers();
+
+  gameOverTitle.textContent = "Time’s Up!";
+  gameOverMessage.textContent = "Scenario ended. Compare results and replay for higher scores + better decisions.";
+
+  topicsCoveredList.innerHTML = Array.from(gameState.topicsCovered)
+    .map(t => `<span class="topic-badge">${t}</span>`).join('') || '<span style="opacity:.7;">No topics recorded</span>';
+
+  const sorted = [...gameState.players].sort((a,b) => playerScore(b) - playerScore(a));
+  finalResults.innerHTML = sorted.map((p, idx) => {
+    const s = p.stats;
+    return `
+      <div class="player-card" style="margin-bottom:10px;">
+        <div class="player-head">
+          <div class="player-name">${idx === 0 ? "🏆" : "👑"} ${p.name}</div>
+          <span class="pill">Score: <strong>${playerScore(p).toFixed(0)}</strong></span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat"><div class="stat-label">GDP</div><div class="stat-value">${s.gdp.toFixed(1)}</div></div>
+          <div class="stat"><div class="stat-label">Unemp</div><div class="stat-value">${s.unemp.toFixed(1)}%</div></div>
+          <div class="stat"><div class="stat-label">Inflation</div><div class="stat-value">${s.inflation.toFixed(1)}%</div></div>
+          <div class="stat"><div class="stat-label">Treasury</div><div class="stat-value">$${s.cash}</div></div>
+          <div class="stat"><div class="stat-label">Approval</div><div class="stat-value">${s.approval.toFixed(0)}%</div></div>
+          <div class="stat"><div class="stat-label">Rank</div><div class="stat-value">#${idx+1}</div></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  gameOverScreen.style.display = 'flex';
+}
+
+/* =========================================================
+   CONTROLS / SETUP
+========================================================= */
+function buildPlayerNameInputs(){
+  const count = Number(playerCountSelect.value);
+  playerNameInputs.innerHTML = Array.from({length: count}, (_, i) => `
+    <div class="setup-row">
+      <label>Player ${i+1}</label>
+      <input data-player-name="${i+1}" style="flex:1;" placeholder="Name (optional)" />
+    </div>
+  `).join('');
+}
+
+function togglePause(force = null){
+  gameState.paused = (force !== null) ? force : !gameState.paused;
   pausedOverlay.style.display = gameState.paused ? 'block' : 'none';
   pauseBtn.textContent = gameState.paused ? '▶ Resume' : '⏸ Pause';
 }
 
-function clearTimers() {
-  if (updateInterval) clearInterval(updateInterval);
-  if (secondInterval) clearInterval(secondInterval);
-  updateInterval = null;
-  secondInterval = null;
-}
+startScenarioBtn.addEventListener('click', startGame);
 
-function startGame() {
-  gameState.scenario = SCENARIOS[gameState.scenarioKey];
-
-  Object.assign(gameState, gameState.scenario.startingStats);
-  gameState.prevStats = { ...gameState.scenario.startingStats };
-
-  gameState.timeRemaining = gameState.scenario.duration;
-  gameState.timeElapsed = 0;
-  gameState.eventTimeline = [...gameState.scenario.eventTimeline];
-  gameState.nextEventIndex = 0;
-
-  gameState.topicsCovered.clear();
-  gameState.currentEvent = null;
-  gameState.paused = false;
-  gameState.gameOver = false;
-  gameState.victory = false;
-
-  scenarioScreen.style.display = 'none';
+restartBtn.addEventListener('click', () => {
   gameOverScreen.style.display = 'none';
-  eventContainer.innerHTML = '';
-  activityLog.innerHTML = '';
-
-  updateDisplay();
-  log('Scenario started!', 0);
-
-  clearTimers();
-  updateInterval = setInterval(gameLoop, 2000);
-  secondInterval = setInterval(secondTick, 1000);
-}
-
-function endGame() {
-  gameState.gameOver = true;
-  clearTimers();
-
-  const scenario = gameState.scenario;
-
-  const gdpTarget = Number(scenario.objectives[0].match(/\d+/)?.[0] || 0);
-  const unempTarget = Number(scenario.objectives[1].match(/\d+/)?.[0] || 999);
-  const approvalTarget = Number(scenario.objectives[2].match(/\d+/)?.[0] || 0);
-
-  const checks = {
-    gdp: gameState.gdp >= gdpTarget,
-    unemp: gameState.unemp <= unempTarget,
-    approval: gameState.approval >= approvalTarget
-  };
-
-  gameState.victory = (checks.gdp && checks.unemp && checks.approval);
-
-  gameOverTitle.textContent = gameState.victory ? 'Victory!' : "Time's Up";
-  gameOverTitle.className = `game-over-title ${gameState.victory ? 'victory' : 'defeat'}`;
-
-  gameOverMessage.textContent = gameState.victory
-    ? 'You successfully navigated the economic crisis and achieved your objectives!'
-    : 'The scenario ended. Review your decisions and try again to improve your outcome.';
-
-  gameOverStats.innerHTML = `
-    <div class="stat-card"><div class="stat-label">Final GDP</div><div class="stat-value">${gameState.gdp.toFixed(1)}</div></div>
-    <div class="stat-card"><div class="stat-label">Unemployment</div><div class="stat-value">${gameState.unemp.toFixed(1)}%</div></div>
-    <div class="stat-card"><div class="stat-label">Inflation</div><div class="stat-value">${gameState.inflation.toFixed(1)}%</div></div>
-    <div class="stat-card"><div class="stat-label">Approval</div><div class="stat-value">${gameState.approval.toFixed(0)}%</div></div>
-    <div class="stat-card"><div class="stat-label">Treasury</div><div class="stat-value">$${gameState.cash}</div></div>
-    <div class="stat-card"><div class="stat-label">Topics Covered</div><div class="stat-value">${gameState.topicsCovered.size}</div></div>
-  `;
-
-  topicsCoveredList.innerHTML = Array.from(gameState.topicsCovered)
-    .map(t => `<span class="topic-badge">${t}</span>`)
-    .join('');
-
-  gameOverScreen.style.display = 'flex';
-  log(gameState.victory ? 'Victory achieved!' : 'Scenario ended');
-}
-
-function showScenarioScreen() {
-  const scenario = SCENARIOS[gameState.scenarioKey];
-
-  scenarioTitle.textContent = scenario.title;
-  scenarioDescription.textContent = scenario.description;
-  objectivesList.innerHTML = scenario.objectives.map(obj => `<li>${obj}</li>`).join('');
-
   scenarioScreen.style.display = 'flex';
-  gameOverScreen.style.display = 'none';
-}
-
-/* ========================================
-   QUICK ACTIONS
-======================================== */
-
-tradeBtn.addEventListener('click', () => {
-  if (gameState.paused || gameState.gameOver || gameState.currentEvent) return;
-  applyStats({ gdp: 1, cash: 100, approval: 3 });
-  log('<strong>Trade Deal:</strong> Negotiated favorable terms with Eastmere');
 });
-
-investBtn.addEventListener('click', () => {
-  if (gameState.paused || gameState.gameOver || gameState.currentEvent || gameState.cash < 200) return;
-  applyStats({ cash: -200, gdp: 1.5, unemp: -0.5, approval: 4 });
-  log('<strong>Public Investment:</strong> Funded infrastructure project');
-});
-
-taxBtn.addEventListener('click', () => {
-  if (gameState.paused || gameState.gameOver || gameState.currentEvent) return;
-  applyStats({ cash: 150, approval: -6, gdp: -0.5 });
-  log('<strong>Tax Policy:</strong> Raised taxes to fund programs');
-});
-
-rateBtn.addEventListener('click', () => {
-  if (gameState.paused || gameState.gameOver || gameState.currentEvent) return;
-  applyStats({ inflation: -1, gdp: -0.5, approval: 2 });
-  log('<strong>Monetary Policy:</strong> Adjusted interest rates');
-});
-
-/* ========================================
-   UI HANDLERS
-======================================== */
-
-pauseBtn.addEventListener('click', () => { if (!gameState.gameOver) togglePause(); });
 
 newGameBtn.addEventListener('click', () => {
   clearTimers();
-  gameState.scenarioKey = scenarioSelect.value;
-  showScenarioScreen();
+  gameOverScreen.style.display = 'none';
+  scenarioScreen.style.display = 'flex';
 });
 
-scenarioSelect.addEventListener('change', () => { gameState.scenarioKey = scenarioSelect.value; });
+pauseBtn.addEventListener('click', () => {
+  if (!gameState.gameOver) togglePause();
+});
 
-startScenarioBtn.addEventListener('click', startGame);
-restartBtn.addEventListener('click', showScenarioScreen);
+playerCountSelect.addEventListener('change', buildPlayerNameInputs);
 
-/* ========================================
+/* =========================================================
    INIT
-======================================== */
-window.addEventListener('load', showScenarioScreen);
+========================================================= */
+window.addEventListener('load', () => {
+  buildPlayerNameInputs();
+  scenarioScreen.style.display = 'flex';
+  modeLabel.textContent = '—';
+  updateUI();
+});
 </script>
 
 </body>
